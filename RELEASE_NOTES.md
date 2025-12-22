@@ -5,15 +5,24 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 # Version 3.3
 
+## General
+- The application now runs on .NET 10, bringing performance improvements and access to the latest runtime features.
+
 ## Bugfixes
 - Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
 - ToupTek based filter wheels and focusers will no longer be listed in the camera connector.
+- When updating the application, the color schema upgrades now properly apply updated or added colors
 
 ## Improvements
 - **Autofocus after HFR Increase Trigger**
     - new Trend per Filter checkbox to consider HFR Trend per filter (default) or across all filters to earlier trigger autofocus runs when imaging with continues filter loops 
 - When a safety monitor is connected and is reporting unsafe conditions, the imaging related core triggers will no longer fire as the conditions aren't safe anyways to execute them.
     - In case the meridian should trigger in this scenario, it will stop mount tracking instead to ensure there will be no pier collision. Safety related logic in a sequence needs to handle resuming tracking once it's safe again.
+- **Additional manual focus targets**
+    - 160 stars have been added to the manual focus target list to cover more stars of different magnitudes across the sky
+- Filterwheels will now poll in the background their position in case the wheel is moved by another client. This ensures that N.I.N.A. always has the correct filter position even when the wheel was moved outside of N.I.N.A.
+- Enhanced sequencer exit handling to more reliably detect actual changes and prevent false-positive change prompts.
+- Clicking on slew Alt/Az in the Mount equipment page with Mount drivers that do not support slewing to Alt/Az, will now fallback to slewing to RA/Dec coordinates instead of doing nothing.
 
 ## Features
 
@@ -22,6 +31,23 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - In case your ASCOM Alpaca specific device has a static IP or doesn't offer Alpaca Discovery a new static entry is available for each device type to pick from where you can specify the address to connect to instead of having to rely on discovery
 - **Altair, Mallincam, Ogma, Omegon, Risingcam, SvBony and ToupTek Filterwheel Native Driver**
   - The ToupTek based filter wheels are now available as a native driver.
+- **Oasis Focuser Native Driver**
+  - The Oasis focuser is now available as a native driver.
+- **PlayerOne FilterWheel**
+  - Added setting to change unidirectional mode
+  - While connecting the app will wait for the filter wheel homing to finish before proceeding
+
+### **User Interface & Usability**
+- **Sky Atlas Improvements**  
+  - Deep sky objects can now be filtered and sorted by their upper transit time
+- **Framing Assistant Improvements** 
+  - In HiPS 2 FITS Sky Survey different HiPS sky maps can now be selected like CTA-FRAM, Mellinger, Northern Sky Narrowband Survey and more for better target planning. 
+- **New Toast Notification System**
+  - Replaced the external ToastNotifications package with a fully native WPF implementation.
+  - Improved reliability, lifetime handling, and positioning across multiple monitors.
+  - Added configurable notification placement: primary screen, same screen as the app, or application window, as well as adjustable corner positioning via Options > General > Advanced.
+  - Notifications now reposition automatically on window moves, DPI changes, and display configuration changes.
+
 
 # Version 3.2
 
@@ -43,6 +69,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
 - Fixed an issue where the rotation imported from planetarium software was overwritten by the previous target rotation when pressing the “Load Image” button in the Framing Assistant.
 - Homing the mount while already at home will no longer raise a warning
+- When having an autofocus step size of 1 the fine focus buttons will now move by 1 step instead of rounding it to 0
 
 ## Features
  

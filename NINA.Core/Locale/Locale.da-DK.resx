@@ -567,10 +567,13 @@ able to compensate for ambient temperature variations</value>
   <data name="LblChange" xml:space="preserve">
     <value>Change</value>
   </data>
+  <data name="LblExposureCount" xml:space="preserve">
+    <value>Exposure count</value>
+  </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>The sequence for the target(s) '{0}' have been modified since it was last saved (or has not been saved yet).
+    <value>The sequence has been modified since it was last saved (changes to {0}).
         
-Do you want to close the sequence and lose the changes anyway?</value>
+Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Closing modified sequence</value>
@@ -3313,6 +3316,9 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <data name="LblTransitSouth" xml:space="preserve">
     <value>Transit South</value>
   </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>Transit time</value>
+  </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>Trends and Hyperbolic</value>
   </data>
@@ -4451,6 +4457,15 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_Name" xml:space="preserve">
     <value>AF After HFR Increase</value>
   </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
+<value>HFR trend per filter</value>
+</data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
+<value>When disabled, the HFR trend is evaluated across all filters combined. 
+This can help to trigger autofocus runs earlier, particular when imaging with frequent filter changes
+and a temperature sensitive optics on a quickly changing ambient temperature. 
+Note: This mode requires that HFR differences between filters in your setup are small.</value>
+</data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>A trigger to initiate an autofocus run after the temperature has changed by the given amount in degrees since the last autofocus run or start of sequence</value>
   </data>
@@ -6525,6 +6540,9 @@ This should only be disabled when having a good pointing model that must not be 
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
     <value>A name up to 8 ASCII characters long that you may assign to the connected ZWO device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
   </data>
+  <data name="LblDeviceIdTooltip" xml:space="preserve">
+    <value>A name up to 8 ASCII characters long that you may assign to the connected device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
+  </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>Unidirectional</value>
   </data>
@@ -7308,6 +7326,15 @@ The sky flat exposure time will be determined again and the exposure will be rep
     <value>Failed to prepare image for display: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
+  <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
+    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+  </data>
+  <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
+    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
+You'll normally be prompted to save the sequence to save the changed exposure count.
+
+If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
+  </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
     <value>Day Rollover Time</value>
   </data>
@@ -7316,6 +7343,63 @@ The sky flat exposure time will be determined again and the exposure will be rep
   </data>
   <data name="LblInitializing" xml:space="preserve">
     <value>Initializing</value>
+  </data>
+  <data name="LblOasisClearStallPrompt" xml:space="preserve">
+    <value>Clear stall?</value>
+  </data>
+  <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
+    <value>Focuser stalled. You need to manually clear stall.</value>
+  </data>
+  <data name="LblBeepOnStartup" xml:space="preserve">
+    <value>Beep on startup</value>
+  </data>
+  <data name="LblBeepOnMove" xml:space="preserve">
+    <value>Beep on move</value>
+  </data>
+  <data name="LblOasisHeating" xml:space="preserve">
+    <value>Heating</value>
+  </data>
+  <data name="LblOasisHeatingTemperature" xml:space="preserve">
+    <value>Heating temperature</value>
+  </data>
+  <data name="LblOasisStallDetection" xml:space="preserve">
+    <value>Stall detection</value>
+  </data>
+  <data name="LblOasisIsStalled" xml:space="preserve">
+    <value>Is stalled</value>
+  </data>
+  <data name="LblOasisUSBCapacity" xml:space="preserve">
+    <value>USB capacity</value>
+  </data>
+  <data name="LblOasisSpeed" xml:space="preserve">
+    <value>Speed</value>
+  </data>
+  <data name="LblOasisClearStall" xml:space="preserve">
+    <value>Clear stall</value>
+  </data>
+  <data name="LblOasisDcPower" xml:space="preserve">
+    <value>DC power</value>
+  </data>
+  <data name="LblOasisBoardHeating" xml:space="preserve">
+    <value>Board heating</value>
+  </data>
+  <data name="LblOasisHeatingPower" xml:space="preserve">
+    <value>Heating power</value>
+  </data>
+  <data name="LblOasisBoardTemperature" xml:space="preserve">
+    <value>Board temperature</value>
+  </data>
+  <data name="LblOasisSyncPosition" xml:space="preserve">
+    <value>Sync position</value>
+  </data>
+  <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
+    <value>Set current position to sync position?</value>
+  </data>
+  <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
+    <value>Selected Oasis focuser is not availble. Please check connection and rescan for devices.</value>
+  </data>
+  <data name="LblBluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
   </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
     <value>ASCOM Alpaca IP Setup</value>
@@ -7333,5 +7417,32 @@ The sky flat exposure time will be determined again and the exposure will be rep
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
     <value>Device Number</value>
+  </data>
+  <data name="LblNotificationWorkArea" xml:space="preserve">
+    <value>Notification work area</value>
+  </data>
+  <data name="LblNotificationCorner" xml:space="preserve">
+    <value>Notification corner</value>
+  </data>
+  <data name="LblNotificationTopLeft" xml:space="preserve">
+    <value>Top left</value>
+  </data>
+  <data name="LblNotificationTopRight" xml:space="preserve">
+    <value>Top right</value>
+  </data>
+  <data name="LblNotificationBottomLeft" xml:space="preserve">
+    <value>Bottom left</value>
+  </data>
+  <data name="LblNotificationBottomRight" xml:space="preserve">
+    <value>Bottom right</value>
+  </data>
+  <data name="LblNotificationPrimaryScreen" xml:space="preserve">
+    <value>Primary screen</value>
+  </data>
+  <data name="LblNotificationSameScreenAsApplication" xml:space="preserve">
+    <value>Same screen as application</value>
+  </data>
+  <data name="LblNotificationApplication" xml:space="preserve">
+    <value>Application</value>
   </data>
 </root>

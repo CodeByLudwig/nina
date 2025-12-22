@@ -568,10 +568,13 @@ w stanie zrekompensować zmiany temperatury otoczenia</value>
   <data name="LblChange" xml:space="preserve">
     <value>Zmień</value>
   </data>
+  <data name="LblExposureCount" xml:space="preserve">
+    <value>Liczba ekspozycji</value>
+  </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>Sekwencja dla celu '{0}' została zmodyfikowana od czasu jej ostatniego zapisania (lub nie została jeszcze zapisana).
+    <value>Sekwencja została zmodyfikowana od czasu jej ostatniego zapisania (zmiany w {0}).
         
-Czy chcesz zamknąć sekwencję i stracić zmiany?</value>
+Czy mimo to chcesz kontynuować i stracić zmiany?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Zamknij zmienioną sekwencję</value>
@@ -3312,6 +3315,9 @@ Przeciągnij prostokąt nad częścią ramki, na której chcesz wykonać podpró
   <data name="LblTransitSouth" xml:space="preserve">
     <value>Przesunięcie na południe</value>
   </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>Transit time</value>
+  </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
     <value>Trendy i hiperbola</value>
   </data>
@@ -4450,6 +4456,14 @@ W przypadku gdy potrzebny jest dłuższy czas, można go określić i aplikacja 
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_Name" xml:space="preserve">
     <value>Autofocus po zwiększeniu HFR</value>
   </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
+<value>Trend zmian HFR dla filtra</value>
+</data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
+<value>Gdy wyłączone, trend zmian HFR jest oceniany łącznie dla wszystkich filtrów. 
+Może to pomóc w wcześniejszym uruchamianiu autofocusa, szczególnie podczas pracy z częstymi zmianami filtrów oraz przy optyce wrażliwej na temperaturę w warunkach szybko zmieniających się. 
+Uwaga: Ten tryb wymaga, aby różnice HFR między filtrami w Twoim zestawie były niewielkie.</value>
+</data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>Uruchomienie autofokusa, jeśli temperatura zmieniła się o kilka stopni od ostatniego ustawienia ostrości lub początku sekwencji</value>
   </data>
@@ -6522,6 +6536,9 @@ Opcję tę należy wyłączyć tylko wtedy, gdy dostępny jest dobry wzorzec map
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
     <value>Nazwa do 8 znaków ASCII, które możesz przypisać do podłączonego urządzenia ZWO. Pozwala to na unikalną identyfikację wielu elementów tego samego modelu urządzenia.</value>
   </data>
+  <data name="LblDeviceIdTooltip" xml:space="preserve">
+    <value>A name up to 8 ASCII characters long that you may assign to the connected device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
+  </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>Jednokierunkowy</value>
   </data>
@@ -7305,6 +7322,15 @@ Czas ekspozycji flatów zostanie określony ponownie, a ekspozycja zostanie powt
     <value>Nie udało się przygotować podglądu obrazu: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
+  <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
+    <value>Nie pytaj o zapisanie sekwencji, gdy jedyną zmienioną rzeczą jest liczba ekspozycji</value>
+  </data>
+  <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
+    <value>Jeśli Twoja sekwencja nie została zmodyfikowana, ale ją uruchomiłeś, liczba ekspozycji zostanie zmieniona.
+Zwykle zostaniesz poproszony o zapisanie sekwencji, aby zapisać zmienioną liczbę ekspozycji.
+
+Jeśli liczba ekspozycji nie jest dla Ciebie ważna, włącz tę opcję, aby uniknąć konieczności zapisywania sekwencji po uruchomieniu.</value>
+  </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
     <value>Czas przestawienia dnia</value>
   </data>
@@ -7314,21 +7340,105 @@ Czas ekspozycji flatów zostanie określony ponownie, a ekspozycja zostanie powt
   <data name="LblInitializing" xml:space="preserve">
     <value>Inicjalizacja</value>
   </data>
+  <data name="LblOasisClearStallPrompt" xml:space="preserve">
+    <value>Clear stall?</value>
+  </data>
+  <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
+    <value>Focuser stalled. You need to manually clear stall.</value>
+  </data>
+  <data name="LblBeepOnStartup" xml:space="preserve">
+    <value>Beep on startup</value>
+  </data>
+  <data name="LblBeepOnMove" xml:space="preserve">
+    <value>Beep on move</value>
+  </data>
+  <data name="LblOasisHeating" xml:space="preserve">
+    <value>Heating</value>
+  </data>
+  <data name="LblOasisHeatingTemperature" xml:space="preserve">
+    <value>Heating temperature</value>
+  </data>
+  <data name="LblOasisStallDetection" xml:space="preserve">
+    <value>Stall detection</value>
+  </data>
+  <data name="LblOasisIsStalled" xml:space="preserve">
+    <value>Is stalled</value>
+  </data>
+  <data name="LblOasisUSBCapacity" xml:space="preserve">
+    <value>USB capacity</value>
+  </data>
+  <data name="LblOasisSpeed" xml:space="preserve">
+    <value>Speed</value>
+  </data>
+  <data name="LblOasisClearStall" xml:space="preserve">
+    <value>Clear stall</value>
+  </data>
+  <data name="LblOasisDcPower" xml:space="preserve">
+    <value>DC power</value>
+  </data>
+  <data name="LblOasisBoardHeating" xml:space="preserve">
+    <value>Board heating</value>
+  </data>
+  <data name="LblOasisHeatingPower" xml:space="preserve">
+    <value>Heating power</value>
+  </data>
+  <data name="LblOasisBoardTemperature" xml:space="preserve">
+    <value>Board temperature</value>
+  </data>
+  <data name="LblOasisSyncPosition" xml:space="preserve">
+    <value>Sync position</value>
+  </data>
+  <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
+    <value>Set current position to sync position?</value>
+  </data>
+  <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
+    <value>Selected Oasis focuser is not availble. Please check connection and rescan for devices.</value>
+  </data>
+  <data name="LblBluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
+  </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
-    <value>ASCOM Alpaca IP Setup</value>
+    <value>Ustawienia IP ASCOM Alpaca</value>
   </data>
   <data name="LblAlpacaDirectServiceType" xml:space="preserve">
-    <value>Service Type</value>
+    <value>Typ usługi</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
   <data name="LblAlpacaDirectIpAddress" xml:space="preserve">
-    <value>IP Address</value>
+    <value>Adres IP</value>
   </data>
   <data name="LblAlpacaDirectPort" xml:space="preserve">
     <value>Port</value>
     <comment>The IP Port to use for an alpaca direct device</comment>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
-    <value>Device Number</value>
+    <value>Numer urządzenia</value>
+  </data>
+  <data name="LblNotificationWorkArea" xml:space="preserve">
+    <value>Obszar roboczy powiadomień</value>
+  </data>
+  <data name="LblNotificationCorner" xml:space="preserve">
+    <value>Kącik powiadomień</value>
+  </data>
+  <data name="LblNotificationTopLeft" xml:space="preserve">
+    <value>Lewy górny róg</value>
+  </data>
+  <data name="LblNotificationTopRight" xml:space="preserve">
+    <value>Prawy górny róg</value>
+  </data>
+  <data name="LblNotificationBottomLeft" xml:space="preserve">
+    <value>Lewy dolny róg</value>
+  </data>
+  <data name="LblNotificationBottomRight" xml:space="preserve">
+    <value>Dolny prawy róg</value>
+  </data>
+  <data name="LblNotificationPrimaryScreen" xml:space="preserve">
+    <value>Ekran główny</value>
+  </data>
+  <data name="LblNotificationSameScreenAsApplication" xml:space="preserve">
+    <value>Ten sam ekran co w aplikacji</value>
+  </data>
+  <data name="LblNotificationApplication" xml:space="preserve">
+    <value>Aplikacja</value>
   </data>
 </root>

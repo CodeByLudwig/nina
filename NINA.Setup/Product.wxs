@@ -107,6 +107,7 @@
       <ComponentGroupRef Id="External_x64_PlayerOne_files" />
       <ComponentGroupRef Id="External_x64_ASTPAN_files" />
       <ComponentGroupRef Id="External_x64_OGMA_files" />
+      <ComponentGroupRef Id="External_x64_Oasis_files" />
       <ComponentGroupRef Id="Utility_DCRaw_files" />
       <ComponentGroupRef Id="External_JPLEPH_files" />
       <ComponentGroupRef Id="Database_Initial_files" />
@@ -239,6 +240,7 @@
               <Directory Id="External_x64_PlayerOne" Name="PlayerOne" />
               <Directory Id="External_x64_ASTPAN" Name="ASTPAN" />
               <Directory Id="External_x64_OGMA" Name="OGMA" />
+              <Directory Id="External_x64_Oasis" Name="Oasis" />
             </Directory>
           </Directory>
           <Directory Id="Utility" Name="Utility">
@@ -364,6 +366,9 @@
   <Fragment>
 
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="e_sqlite3.dll" Guid="2498761c-837d-4c24-a049-7bc0bc8aae98">
+        <File Id="e_sqlite3.dll" Name="e_sqlite3.dll" Source="$(var.NINA_TargetDir)e_sqlite3.dll" />
+      </Component>
       <Component Id="Accord.dll" Guid="2ea6a34b-6c9a-42da-bb4c-24dcf06e9ef2" Bitness="$(var.Win64)">
         <File Id="Accord.dll" Name="Accord.dll" Source="$(var.NINA_TargetDir)Accord.dll" />
       </Component>
@@ -433,8 +438,11 @@
       <Component Id="Fastenshtein.dll" Guid="3A028268-64BC-4C7E-9895-56BEC5BA259C" Bitness="$(var.Win64)">
         <File Id="Fastenshtein.dll" Name="Fastenshtein.dll" Source="$(var.NINA_TargetDir)Fastenshtein.dll" />
       </Component>
-      <Component Id="FreeImageNET.dll" Guid="65499493-d525-4075-b136-c37e5713dd5b" Bitness="$(var.Win64)">
-        <File Id="FreeImageNET.dll" Name="FreeImageNET.dll" Source="$(var.NINA_TargetDir)FreeImageNET.dll" />
+      <Component Id="FreeImage.dll" Guid="73504596-bbcd-454b-bf8c-492f0c906a1e">
+        <File Id="FreeImage.dll" Name="FreeImage.dll" Source="$(var.NINA_TargetDir)FreeImage.dll" />
+      </Component>
+      <Component Id="FreeImage.Standard.dll" Guid="8b23baea-54b1-4f91-b813-c646f3fb70e8">
+        <File Id="FreeImage.Standard.dll" Name="FreeImage.Standard.dll" Source="$(var.NINA_TargetDir)FreeImage.Standard.dll" />
       </Component>
       <Component Id="Google.Protobuf.dll" Guid="48efb59c-8605-4a27-b22c-6dc5eef42339" Bitness="$(var.Win64)">
         <File Id="Google.Protobuf.dll" Name="Google.Protobuf.dll" Source="$(var.NINA_TargetDir)Google.Protobuf.dll" />
@@ -631,9 +639,6 @@
       <Component Id="sni.dll" Guid="0E0DB3D2-E282-4C15-9B29-13D1E513EF8D">
         <File Id="sni.dll" Name="sni.dll" Source="$(var.NINA_TargetDir)sni.dll" />
       </Component>
-      <Component Id="SQLite.Interop.dll_x64_native" Guid="A217249B-AF5A-4128-B4D0-336B111B5995">
-        <File Id="SQLite.Interop.dll_x64_native" Name="SQLite.Interop.dll" Source="$(var.NINA_TargetDir)SQLite.Interop.dll" />
-      </Component>
       <Component Id="System.ComponentModel.Composition.dll" Guid="d8c08164-ef91-4cbf-8a10-a6087e40f4a1">
         <File Id="System.ComponentModel.Composition.dll" Name="System.ComponentModel.Composition.dll" Source="$(var.NINA_TargetDir)System.ComponentModel.Composition.dll" />
       </Component>
@@ -660,12 +665,6 @@
       </Component>
       <Component Id="thirdparty" Guid="3C8404A3-D6E6-48DE-81FA-03028AEE884D" Bitness="$(var.Win64)">
         <File Id="thirdparty" Name="3rd-party-licenses.txt" Source="$(var.NINA_TargetDir)3rd-party-licenses.txt" />
-      </Component>
-      <Component Id="ToastNotifications.dll" Guid="640b6c3c-5a8d-47c8-9478-9ebbb876d2fc" Bitness="$(var.Win64)">
-        <File Id="ToastNotifications.dll" Name="ToastNotifications.dll" Source="$(var.NINA_TargetDir)ToastNotifications.dll" />
-      </Component>
-      <Component Id="ToastNotifications.Messages.dll" Guid="74b98fb4-f2a9-44d8-8c8b-988b83bf09d4" Bitness="$(var.Win64)">
-        <File Id="ToastNotifications.Messages.dll" Name="ToastNotifications.Messages.dll" Source="$(var.NINA_TargetDir)ToastNotifications.Messages.dll" />
       </Component>
       <Component Id="Trinet.Core.IO.Ntfs.dll" Guid="194dc6f2-ec04-439a-ab26-b9edbe4daee0" Bitness="$(var.Win64)">
         <File Id="Trinet.Core.IO.Ntfs.dll" Name="Trinet.Core.IO.Ntfs.dll" Source="$(var.NINA_TargetDir)Trinet.Core.IO.Ntfs.dll" />
@@ -708,6 +707,9 @@
       </Component>
       <Component Id="clrgc.dll" Guid="e4e9717a-6e64-48ef-a4d9-9ff3362cfb8c">
         <File Id="clrgc.dll" Name="clrgc.dll" Source="$(var.NINA_TargetDir)clrgc.dll" />
+      </Component>
+      <Component Id="clrgcexp.dll" Guid="1309a375-450e-4ae8-aa48-8b87f81af8e1">
+        <File Id="clrgcexp.dll" Name="clrgcexp.dll" Source="$(var.NINA_TargetDir)clrgcexp.dll" />
       </Component>
       <Component Id="clrjit.dll" Guid="385ef05e-ff72-4a36-bb3b-d9cae41748ad">
         <File Id="clrjit.dll" Name="clrjit.dll" Source="$(var.NINA_TargetDir)clrjit.dll" />
@@ -766,8 +768,8 @@
       <Component Id="mscordaccore.dll" Guid="336d6d9f-0a67-4a83-83e7-2158c417b7dc">
         <File Id="mscordaccore.dll" Name="mscordaccore.dll" Source="$(var.NINA_TargetDir)mscordaccore.dll" />
       </Component>
-      <Component Id="mscordaccore_amd64_amd64_8.0.2125.47513.dll" Guid="d294f8fb-b886-47bf-8ea2-187516e37496">
-        <File Id="mscordaccore_amd64_amd64_8.0.2125.47513.dll" Name="mscordaccore_amd64_amd64_8.0.2125.47513.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.2125.47513.dll" />
+      <Component Id="mscordaccore_amd64_amd64_10.0.25.52411.dll" Guid="f611e6eb-f88f-44c6-ab1a-c59348aff390">
+        <File Id="mscordaccore_amd64_amd64_10.0.25.52411.dll" Name="mscordaccore_amd64_amd64_10.0.25.52411.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_10.0.25.52411.dll" />
       </Component>
       <Component Id="mscordbi.dll" Guid="b6776634-a994-46a1-a11f-03b938bf02de">
         <File Id="mscordbi.dll" Name="mscordbi.dll" Source="$(var.NINA_TargetDir)mscordbi.dll" />
@@ -819,6 +821,9 @@
       </Component>
       <Component Id="PresentationFramework.dll" Guid="6059b1e3-b587-424f-ad94-fe23536b93fe">
         <File Id="PresentationFramework.dll" Name="PresentationFramework.dll" Source="$(var.NINA_TargetDir)PresentationFramework.dll" />
+      </Component>
+      <Component Id="PresentationFramework.Fluent.dll" Guid="f1fdba3b-0aee-4fea-9b86-b2345fdc4717">
+        <File Id="PresentationFramework.Fluent.dll" Name="PresentationFramework.Fluent.dll" Source="$(var.NINA_TargetDir)PresentationFramework.Fluent.dll" />
       </Component>
       <Component Id="PresentationFramework.Luna.dll" Guid="a99341b7-b0e0-4abc-9f3e-594492f5a85d">
         <File Id="PresentationFramework.Luna.dll" Name="PresentationFramework.Luna.dll" Source="$(var.NINA_TargetDir)PresentationFramework.Luna.dll" />
@@ -964,6 +969,9 @@
       <Component Id="System.Formats.Asn1.dll" Guid="8693fd3d-3a1b-4423-a0ee-dc8e264cdcf8">
         <File Id="System.Formats.Asn1.dll" Name="System.Formats.Asn1.dll" Source="$(var.NINA_TargetDir)System.Formats.Asn1.dll" />
       </Component>
+      <Component Id="System.Formats.Nrbf.dll" Guid="70279a5b-5e79-45ba-803c-9e6382247a0c">
+        <File Id="System.Formats.Nrbf.dll" Name="System.Formats.Nrbf.dll" Source="$(var.NINA_TargetDir)System.Formats.Nrbf.dll" />
+      </Component>
       <Component Id="System.Formats.Tar.dll" Guid="ad85c921-c445-4c36-97e2-2a36c7c9b370">
         <File Id="System.Formats.Tar.dll" Name="System.Formats.Tar.dll" Source="$(var.NINA_TargetDir)System.Formats.Tar.dll" />
       </Component>
@@ -1030,6 +1038,9 @@
       <Component Id="System.Linq.dll" Guid="7be7f75b-77bf-44df-bd69-65859fd40463">
         <File Id="System.Linq.dll" Name="System.Linq.dll" Source="$(var.NINA_TargetDir)System.Linq.dll" />
       </Component>
+      <Component Id="System.Linq.AsyncEnumerable.dll" Guid="10532390-772b-4a1c-9fab-274a59240146">
+        <File Id="System.Linq.AsyncEnumerable.dll" Name="System.Linq.AsyncEnumerable.dll" Source="$(var.NINA_TargetDir)System.Linq.AsyncEnumerable.dll" />
+      </Component>
       <Component Id="System.Linq.Expressions.dll" Guid="67ea549d-123c-40ab-8686-0be128cc15d5">
         <File Id="System.Linq.Expressions.dll" Name="System.Linq.Expressions.dll" Source="$(var.NINA_TargetDir)System.Linq.Expressions.dll" />
       </Component>
@@ -1078,6 +1089,9 @@
       <Component Id="System.Net.Security.dll" Guid="a8fd03e0-9c06-44ea-9bd2-6e0fdd7d123d">
         <File Id="System.Net.Security.dll" Name="System.Net.Security.dll" Source="$(var.NINA_TargetDir)System.Net.Security.dll" />
       </Component>
+      <Component Id="System.Net.ServerSentEvents.dll" Guid="fb7c1c62-8588-40a5-87a7-ad61ff5de028">
+        <File Id="System.Net.ServerSentEvents.dll" Name="System.Net.ServerSentEvents.dll" Source="$(var.NINA_TargetDir)System.Net.ServerSentEvents.dll" />
+      </Component>
       <Component Id="System.Net.ServicePoint.dll" Guid="f5f053d8-d3f7-440f-bef3-be6810383c50">
         <File Id="System.Net.ServicePoint.dll" Name="System.Net.ServicePoint.dll" Source="$(var.NINA_TargetDir)System.Net.ServicePoint.dll" />
       </Component>
@@ -1119,6 +1133,15 @@
       </Component>
       <Component Id="System.Private.Uri.dll" Guid="ee8fb911-0af3-48ab-9673-90a31910bdb0">
         <File Id="System.Private.Uri.dll" Name="System.Private.Uri.dll" Source="$(var.NINA_TargetDir)System.Private.Uri.dll" />
+      </Component>
+      <Component Id="System.Private.Windows.Core.dll" Guid="e91fc21c-2d60-4e99-b695-391b98829185">
+        <File Id="System.Private.Windows.Core.dll" Name="System.Private.Windows.Core.dll" Source="$(var.NINA_TargetDir)System.Private.Windows.Core.dll" />
+      </Component>
+      <Component Id="System.Private.Windows.GdiPlus.dll" Guid="4c32e1f5-41b7-46b1-b7f8-d3624d338465">
+        <File Id="System.Private.Windows.GdiPlus.dll" Name="System.Private.Windows.GdiPlus.dll" Source="$(var.NINA_TargetDir)System.Private.Windows.GdiPlus.dll" />
+      </Component>
+      <Component Id="System.Windows.Primitives.dll" Guid="4ac06eb7-0f43-4a24-88e7-b6a07cc216bb">
+        <File Id="System.Windows.Primitives.dll" Name="System.Windows.Primitives.dll" Source="$(var.NINA_TargetDir)System.Windows.Primitives.dll" />
       </Component>
       <Component Id="System.Private.Xml.dll" Guid="514898e5-dbda-44a8-b70c-8b0fc7656233">
         <File Id="System.Private.Xml.dll" Name="System.Private.Xml.dll" Source="$(var.NINA_TargetDir)System.Private.Xml.dll" />
@@ -1475,6 +1498,12 @@
       </Component>
       <Component Id="Database_Migration_14.sql" Guid="872DFD14-7FFD-4043-B1CD-52190C05FE62">
         <File Id="Database_Migration_14.sql" Name="14.sql" Source="$(var.NINA_TargetDir)Database\Migration\14.sql" />
+      </Component>
+      <Component Id="Database_Migration_15.sql" Guid="BC665729-A2B6-4A3E-9754-10EB8F33682D">
+        <File Id="Database_Migration_15.sql" Name="15.sql" Source="$(var.NINA_TargetDir)Database\Migration\15.sql" />
+      </Component>
+      <Component Id="Database_Migration_16.sql" Guid="8BA85054-7F6E-4CB3-91F6-FA7CBD7C7E1F">
+        <File Id="Database_Migration_16.sql" Name="16.sql" Source="$(var.NINA_TargetDir)Database\Migration\16.sql" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -2239,6 +2268,13 @@
     <ComponentGroup Id="External_x64_OGMA_files" Directory="External_x64_OGMA">
       <Component Id="External_x64_OGMA_ogmacam.dll" Guid="c51d0029-b4e9-4dc4-bb57-f77a22346ea0" Bitness="$(var.Win64)">
         <File Id="External_x64_OGMA_ogmacam.dll" Name="ogmacam.dll" Source="$(var.NINA_TargetDir)External\x64\OGMA\ogmacam.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x64_Oasis_files" Directory="External_x64_Oasis">
+      <Component Id="External_x64_Oasis_OasisFocuser.dll" Guid="8e45b1b1-e320-484b-97b5-cd5512a7f9bd" Bitness="$(var.Win64)">
+        <File Id="External_x64_Oasis_OasisFocuser.dll" Name="OasisFocuser.dll" Source="$(var.NINA_ProjectDir)External\x64\Oasis\OasisFocuser.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
