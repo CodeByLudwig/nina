@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -398,6 +398,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                             profileService.ActiveProfile.RotatorSettings.Id = Rotator.Id;
                             profileService.ActiveProfile.RotatorSettings.LastDeviceName = Rotator.DisplayName;
                             profileService.ActiveProfile.RotatorSettings.Reverse2 = this.Rotator.Reverse;
+
+                            BroadcastRotatorInfo();
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Rotator. Id: {Rotator.Id} Name: {Rotator.Name} DisplayName: {Rotator.DisplayName} Driver Version: {Rotator.DriverVersion}");

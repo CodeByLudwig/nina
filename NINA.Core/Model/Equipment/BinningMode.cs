@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -85,8 +85,10 @@ namespace NINA.Core.Model.Equipment {
             mode = null;
             if (string.IsNullOrEmpty(s)) return false;
             try {
-                if (!short.TryParse(s.Split(SEPARATOR)[0], out var x)) return false;
-                if (!short.TryParse(s.Split(SEPARATOR)[1], out var y)) return false;
+                string[] parts = s.Split(SEPARATOR);
+                if (parts.Length != 2) return false;
+                if (!short.TryParse(parts[0], out short x)) return false;
+                if (!short.TryParse(parts[1], out short y)) return false;
                 mode = new BinningMode(x, y);
                 return true;
             } catch (Exception ex) {

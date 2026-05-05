@@ -3,7 +3,20 @@
 If N.I.N.A. helps you on your journey to capture amazing deep sky images, please consider a donation. Every contribution helps keep the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
-# Version 3.3
+### <span style="color:orange;">Nightly Build: USE WITH CAUTION</span>
+### <span style="color:orange;">
+Nightly builds are preview versions containing active development work.
+
+They may be unstable and change frequently.
+Running outdated nightly builds is strongly discouraged.
+
+Before using nightly builds, consider backing up your profiles located at:
+%localappdata%\NINA
+
+This allows you to safely return to a stable release if needed.
+</span>
+
+# Version 3.3 NIGHTLY
 
 ## General
 - The application now runs on .NET 10, bringing performance improvements and access to the latest runtime features.
@@ -12,6 +25,16 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
 - ToupTek based filter wheels and focusers will no longer be listed in the camera connector.
 - When updating the application, the color schema upgrades now properly apply updated or added colors
+- The native driver for SBIG cameras now provides the proper electrons/ADU value for the `EGAIN` keyword in image metadata
+- Fixed excessive debug logging after disconnecting the OpenMeteo weather client
+- The native star detector now rejects stars whose refined centroid falls on any edge of the detection rectangle, preventing truncated stars from biasing autofocus measurements
+- Fixed "Slew To Alt/Az" sequence instruction incorrectly using SlewToCoordinatesAsync instead of SlewToAltAzAsync
+- Trained flat exposure settings now update the exact matching filter, binning, gain, and offset entry instead of accidentally reusing a nearby fallback match.
+- FITS headers now write observer site latitude, longitude, and site name correctly when those values are present.
+- XISF metadata import now reads Bayer offsets, focal ratio, target coordinates, and wind speed/gust units correctly.
+- Manual rotator moves now clean up their moving state correctly when the rotation prompt is cancelled.
+- Fixed an issue where custom popout windows and message boxes could briefly render incorrectly when opened.
+- Firmware version is now correctly displayed for certain QHY camera models.
 
 ## Improvements
 - **Autofocus after HFR Increase Trigger**
@@ -23,30 +46,102 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Filterwheels will now poll in the background their position in case the wheel is moved by another client. This ensures that N.I.N.A. always has the correct filter position even when the wheel was moved outside of N.I.N.A.
 - Enhanced sequencer exit handling to more reliably detect actual changes and prevent false-positive change prompts.
 - Clicking on slew Alt/Az in the Mount equipment page with Mount drivers that do not support slewing to Alt/Az, will now fallback to slewing to RA/Dec coordinates instead of doing nothing.
+- The manual focuser step buttons now use configurable multipliers. Users can adjust the small step (default 0.5x) and large step (default 5.0x) multipliers in Options > Imaging > Autofocus.
+- Debayer algorithm has been optimized to work fast even on older CPUs
+- Sky brightness readings in the Weather device windows have been increased from 2 decimal places to 5 so that measurements obtained in low light conditions are adequately displayed.
+- **Autofocus & Star Measurements**
+    - The native star detector now measures HFR from a centroid-refined curve of growth instead of using a first-moment approximation
+    - Local star background estimation now uses a robust sigma-clipped median to reduce bias from nearby stars and outliers
+    - Native FWHM and eccentricity measurements are now calculated and exposed alongside HFR
+    - The image history panel now offers FWHM and eccentricity as selectable metrics
+    - The image statistics and image history panels can display FWHM, HFR and HFR deviation in either pixels or arcseconds, based on the active profile's camera pixel size and telescope focal length
+
+## Behavioral Changes
+- Unparking the mount no longer automatically starts sidereal tracking. Tracking will begin automatically during a slew to a target, as usual.
+  - This change only affects mount drivers that previously started tracking immediately upon unparking; drivers that did not exhibit this behavior are unaffected.
+  - Preventing automatic tracking on unpark avoids unexpected mount movement and reduces the risk of pier collisions or other unintended motion, while ensuring consistent and predictable behavior across drivers.
+- `Wait Until Safe` instruction no longer requires a safety monitor to be connected. A disconnected safety monitor is treated as unsafe, as it could be disconnected due to communication failures.
 
 ## Features
+
+### **Sequencer Expressions**
+- **Expression support for sequence items**
+  - Many sequence item parameters can now optionally use expressions instead of fixed values.
+  - Expressions can reference live data such as device state, weather conditions, image statistics, and time-based values as well as user-defined constants and variables.
+  - Simple numeric values continue to work exactly as before.
+  - This brings the core functionality previously available via the **Sequencer Powerups** plugin directly into N.I.N.A.
+
+- **Expression editor with symbol and function sidebar**
+  - A new sidebar is available when editing expression-enabled fields.
+  - Displays all currently available **symbols**, grouped by category (e.g. mount, camera, weather, image data).
+  - Lists all supported **functions** (math, logic, time, string, and utility helpers).
+  - Users familiar with the **Sequencer Powerups** plugin will recognize the workflow and capabilities.
+
+- **Built-in expression functions**
+  - Includes common mathematical operations, logical and conditional helpers, time-based functions, and string utilities.
+  - Functions can be freely combined with symbols to build complex expressions.
+
+- **Seamless migration and backward compatibility**
+  - Existing sequences continue to work without any changes.
+  - Expression support is opt-in per field; fields that do not use expressions behave exactly as before.
+  - When loading older sequences, existing values are preserved and automatically interpreted as simple expressions.
+
+- **Plugin support (opt-in)**
+  - Expression support for plugin-provided sequence items is **opt-in** and requires plugin updates.
+  - Plugins must explicitly adopt the new expression system to expose expression-enabled fields.
+  - Plugins that are not updated continue to function normally, but their sequence items will not offer expression support.
+
+- **Sequencer**
+    - Added a **Conditional Instruction Set** container that evaluates a sequencer expression when reached and runs or skips its contained instructions based on the result.
+    - Added a new **Trigger On Unsafe** safety monitor trigger. It can run configured instructions when the safety monitor reports unsafe or disconnects after it has been connected, then wait until the safety monitor reports safe again before running follow-up instructions.
+    - When triggered, the currently running instruction is interrupted and reset so safety handling can take over immediately.
+    - Added a new **Custom Trigger** that uses an existing trigger as its trigger source and runs user-configured instructions when that source would normally fire.
+    - Added a new **Programmable Meridian Flip** trigger that combines a built-in meridian flip with user-configurable before and after instruction sets while preserving the planned flip time after tracking is stopped.
+
+### **Sequencer Templates**
+- Templates can now be added to a sequence as **Linked Templates** by holding Ctrl while dropping a template from the Templates sidebar, or by using the linked-template context menu.
+- A linked template follows the source template instead of creating an independent copy. It shows the current template contents in a dimmed, read-only preview, updates automatically when the source template changes, and can be edited from the sequence to update the underlying user template.
+- Linked templates can carry their own target override, so the same template can be reused for different targets without storing target data in the template itself.
 
 ### **Device Management**
 - **ASCOM Alpaca Direct Drivers**
     - In case your ASCOM Alpaca specific device has a static IP or doesn't offer Alpaca Discovery a new static entry is available for each device type to pick from where you can specify the address to connect to instead of having to rely on discovery
 - **Altair, Mallincam, Ogma, Omegon, Risingcam, SvBony and ToupTek Filterwheel Native Driver**
   - The ToupTek based filter wheels are now available as a native driver.
+  - The ToupTek based focusers are now available as a native driver.
 - **Oasis Focuser Native Driver**
   - The Oasis focuser is now available as a native driver.
+- **Oasis Filter Wheel Native Driver**
+  - The Oasis filter wheel is now available as a native driver.
 - **PlayerOne FilterWheel**
   - Added setting to change unidirectional mode
   - While connecting the app will wait for the filter wheel homing to finish before proceeding
+- **Moravian Instruments Cameras and Integrated Filter Wheels**
+  - Added native drivers for Moravian Instruments cameras and integrated filter wheels
 
 ### **User Interface & Usability**
+- **Sequencer**
+    - Each intstruction container now has a colored border on the left side to better differentiate between them. This can be disabled in Options > Imaging > Sequence > Colored Container Borders
 - **Sky Atlas Improvements**  
   - Deep sky objects can now be filtered and sorted by their upper transit time
 - **Framing Assistant Improvements** 
-  - In HiPS 2 FITS Sky Survey different HiPS sky maps can now be selected like CTA-FRAM, Mellinger, Northern Sky Narrowband Survey and more for better target planning. 
+  - In HiPS 2 FITS Sky Survey different HiPS sky maps can now be selected like CTA-FRAM, Mellinger, Northern Sky Narrowband Survey and more for better target planning.
+  - Toogle Catalogue Display: visibility of individual catalogues is no stored in settings and a new "show all catalogues" toogle been added   
 - **New Toast Notification System**
   - Replaced the external ToastNotifications package with a fully native WPF implementation.
   - Improved reliability, lifetime handling, and positioning across multiple monitors.
   - Added configurable notification placement: primary screen, same screen as the app, or application window, as well as adjustable corner positioning via Options > General > Advanced.
   - Notifications now reposition automatically on window moves, DPI changes, and display configuration changes.
+
+### File formats
+- **XISF ZStandard Compression**
+  - Added support for ZStandard compression in XISF files.
+
+### **Autofocus & Star Detection**
+- **Star measurement enhancements**
+  - Added native FWHM reporting from background-subtracted radial profiles
+  - Added native eccentricity reporting from flux-weighted second moments
+  - Improved centroid refinement used by star measurements and annotations
 
 
 # Version 3.2

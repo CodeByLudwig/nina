@@ -1,6 +1,6 @@
 ﻿#region "copyright"
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -279,8 +279,8 @@ namespace NINA.Test.Autofocus {
 
             var report = await sut.StartAutoFocus(imagingFilter, ct, new Progress<ApplicationStatus>());
 
-            position.Should().Be(5006);
-            report.CalculatedFocusPoint.Position.Should().Be(5006);
+            position.Should().Be(4998);
+            report.CalculatedFocusPoint.Position.Should().Be(4998);
             report.MeasurePoints.Should().HaveCount(6);
             imagingMediatorMock.Verify(x => x.CaptureImage(It.IsAny<CaptureSequence>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<string>()), Times.Exactly(8));
         }

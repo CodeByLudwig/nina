@@ -1,6 +1,6 @@
-﻿#region "copyright"
+#region "copyright"
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -130,8 +130,8 @@ namespace NINA.Utility {
 
         public void AddBehavior(object behavior) {
             var typedBehavior = behavior as T;
-            if (behavior == null) {
-                throw new ArgumentException($"Can't add behavior {behavior.GetType().FullName} since it doesn't implement {typeof(T).FullName}");
+            if (typedBehavior == null) {
+                throw new ArgumentException($"Can't add behavior {behavior?.GetType().FullName ?? "<null>"} since it doesn't implement {typeof(T).FullName}", nameof(behavior));
             }
 
             Behaviors.Add(typedBehavior);

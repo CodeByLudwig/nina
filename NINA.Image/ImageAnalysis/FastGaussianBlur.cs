@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -36,13 +36,21 @@ namespace NINA.Image.ImageAnalysis {
             palette = image.Palette;
             var rct = new Rectangle(0, 0, _width, _height);
             var bits = image.LockBits(rct, ImageLockMode.ReadOnly, PixelFormat.Format8bppIndexed);
-            int bytes = Math.Abs(bits.Stride) * bits.Height;
-            var source = new byte[rct.Width * rct.Height];
-            Marshal.Copy(bits.Scan0, source, 0, source.Length);
-            image.UnlockBits(bits);
+            try {
+                int stride = Math.Abs(bits.Stride);
+                var source = new byte[_width * _height];
+                byte[] row = new byte[stride];
 
-            gray = new byte[_width * _height];
-            gray = source;
+                for (int y = 0; y < _height; y++) {
+                    IntPtr rowPtr = IntPtr.Add(bits.Scan0, bits.Stride * y);
+                    Marshal.Copy(rowPtr, row, 0, row.Length);
+                    Buffer.BlockCopy(row, 0, source, y * _width, _width);
+                }
+
+                gray = source;
+            } finally {
+                image.UnlockBits(bits);
+            }
         }
 
         public Bitmap Process(int radial) {
@@ -54,8 +62,19 @@ namespace NINA.Image.ImageAnalysis {
             image.Palette = palette;
             var rct = new Rectangle(0, 0, image.Width, image.Height);
             var bits2 = image.LockBits(rct, ImageLockMode.ReadWrite, PixelFormat.Format8bppIndexed);
-            Marshal.Copy(dest, 0, bits2.Scan0, dest.Length);
-            image.UnlockBits(bits2);
+            try {
+                int stride = Math.Abs(bits2.Stride);
+                byte[] row = new byte[stride];
+
+                for (int y = 0; y < _height; y++) {
+                    Array.Clear(row, 0, row.Length);
+                    Buffer.BlockCopy(dest, y * _width, row, 0, _width);
+                    IntPtr rowPtr = IntPtr.Add(bits2.Scan0, bits2.Stride * y);
+                    Marshal.Copy(row, 0, rowPtr, row.Length);
+                }
+            } finally {
+                image.UnlockBits(bits2);
+            }
             return image;
         }
 

@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -29,6 +30,8 @@ using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Core.Utility.Notification;
 using System.Windows;
+using NINA.Sequencer.Generators;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.SequenceItem.Telescope {
 
@@ -38,7 +41,9 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Telescope")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SlewScopeToAltAz : SequenceItem, IValidatable {
+    [UsesExpressions]
+
+    public partial class SlewScopeToAltAz : SequenceItem, IValidatable {
 
         [ImportingConstructor]
         public SlewScopeToAltAz(IProfileService profileService, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator) {
@@ -57,10 +62,22 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new SlewScopeToAltAz(this) {
-                Coordinates = Coordinates?.Clone()
-            };
+        
+        partial void AfterClone(SlewScopeToAltAz clone) {
+            clone.Coordinates = Coordinates?.Clone();
+            clone.Tracking = Tracking;
+        }
+
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext context) {
+            // Fix up Ra and Dec Expressions (auto-update to existing sequences)
+            TopocentricCoordinates c = Coordinates.Coordinates;
+            if (AltExpression.Definition.Length == 0 && c.Altitude.Degree != 0) {
+                AltExpression.Definition = c.Altitude.Degree.ToString(CultureInfo.InvariantCulture);
+            }
+            if (AzExpression.Definition.Length == 0 && c.Azimuth.Degree != 0) {
+                AzExpression.Definition = c.Azimuth.Degree.ToString(CultureInfo.InvariantCulture);
+            }
         }
 
         private IProfileService profileService;
@@ -70,7 +87,20 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         [JsonProperty]
         public InputTopocentricCoordinates Coordinates { get; set; }
 
+        private bool tracking = true;
+
+        [JsonProperty]
+        public bool Tracking {
+            get => tracking;
+            set {
+                tracking = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private IList<string> issues = new List<string>();
+
+        private bool Protect = false;
 
         public IList<string> Issues {
             get => issues;
@@ -80,19 +110,80 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
+        [IsExpression (Default = 0, Range = [-90, 90], HasValidator = true)]
+        public partial double Alt { get; set; }
+
+        partial void AltExpressionValidator(Logic.Expression expr) {
+            // When the decimal value changes, we update the HMS values
+            InputTopocentricCoordinates ic = new InputTopocentricCoordinates(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Elevation);
+            Protect = true;
+            ic.Coordinates.Altitude = Angle.ByDegree(AltExpression.Value);
+            Coordinates.AltDegrees = ic.AltDegrees;
+            Coordinates.AltMinutes = ic.AltMinutes;
+            Coordinates.AltSeconds = ic.AltSeconds;
+            Protect = false;
+        }
+
+        [IsExpression (Default = 0, Range = [0, 360], HasValidator = true)]
+        public partial double Az { get; set; }
+
+        partial void AzExpressionValidator(Logic.Expression expr) {
+            // When the decimal value changes, we update the HMS values
+            InputTopocentricCoordinates ic = new InputTopocentricCoordinates(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Elevation);
+            Protect = true;
+            ic.Coordinates.Azimuth = Angle.ByDegree(AzExpression.Value);
+            Coordinates.AzDegrees = ic.AzDegrees;
+            Coordinates.AzMinutes = ic.AzMinutes;
+            Coordinates.AzSeconds = ic.AzSeconds;
+            Protect = false;
+        }
+
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             if (telescopeMediator.GetInfo().AtPark) {
                 Notification.ShowError(Loc.Instance["LblTelescopeParkedWarning"]);
                 throw new SequenceEntityFailedException(Loc.Instance["LblTelescopeParkedWarning"]);
             }
             var stoppedGuiding = await guiderMediator.StopGuiding(token);
-            await telescopeMediator.SlewToCoordinatesAsync(Coordinates.Coordinates, token);
+            if (telescopeMediator.GetInfo().CanSlewAltAz) {
+                await telescopeMediator.SlewToTopocentricCoordinates(Coordinates.Coordinates, token);
+            } else {
+                await telescopeMediator.SlewToCoordinatesAsync(Coordinates.Coordinates, token);
+            }
+            if (tracking != telescopeMediator.GetInfo().TrackingEnabled) {
+                telescopeMediator.SetTrackingEnabled(tracking);
+            }
             if (stoppedGuiding) {
                 await guiderMediator.StartGuiding(false, progress, token);
             }
         }
 
+        private Angle lastAlt;
+        private Angle lastAz;
+
+        protected void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            // When coordinates change, we change the decimal value
+            InputTopocentricCoordinates ic = (InputTopocentricCoordinates)sender;
+            TopocentricCoordinates c = ic.Coordinates;
+
+            if (Protect) return;
+
+            if (c.Altitude != lastAlt) {
+                AltExpression.Definition = Math.Round(c.Altitude.Degree, 7).ToString(CultureInfo.InvariantCulture);
+            } else if (c.Azimuth != lastAz) {
+                AzExpression.Definition = Math.Round(c.Azimuth.Degree, 7).ToString(CultureInfo.InvariantCulture);
+            }
+
+            lastAlt = c.Altitude;
+            lastAz = c.Azimuth;
+        }
+
         public override void AfterParentChanged() {
+            AltExpression.Context = this;
+            AzExpression.Context = this;
+            if (Coordinates != null) {
+                Coordinates.PropertyChanged += Coordinates_PropertyChanged;
+            }
+            base.AfterParentChanged();
             Validate();
         }
 
@@ -101,12 +192,13 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             if (!telescopeMediator.GetInfo().Connected) {
                 i.Add(Loc.Instance["LblTelescopeNotConnected"]);
             }
+            Logic.Expression.ValidateExpressions(i, AltExpression, AzExpression);
             Issues = i;
             return i.Count == 0;
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SlewScopeToAltAz)}, Coordinates: {Coordinates}";
+            return $"Category: {Category}, Item: {nameof(SlewScopeToAltAz)}, Coordinates: {Coordinates}, Tracking: {Tracking}";
         }
     }
 }

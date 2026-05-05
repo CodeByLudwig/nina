@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -139,7 +139,7 @@ namespace NINA.Sequencer.Container {
                 }
                 var target = parameters.Target as ISequenceItem;
 
-                if (parameters.Position == DropTargetEnum.Center && item.Parent != this) {
+                if (parameters.Position == DropTargetEnum.Center && item.Parent != this && CanAcceptSequenceItemPlacement(this)) {
                     InsertIntoSequenceBlocks(Items.Count, item);
                 }
 
@@ -375,7 +375,7 @@ namespace NINA.Sequencer.Container {
                 } else {
                     int newIndex = index + 1;
                     var container = Items[newIndex] as ISequenceContainer;
-                    if (container?.IsExpanded == true && !(container is IImmutableContainer)) {
+                    if (CanMoveIntoContainer(container)) {
                         container.Items.Insert(0, item);
                         item.Parent?.Remove(item);
                         item.AttachNewParent(container);
@@ -407,7 +407,7 @@ namespace NINA.Sequencer.Container {
                 } else {
                     int newIndex = index - 1;
                     var container = Items[newIndex] as ISequenceContainer;
-                    if (container?.IsExpanded == true && !(container is IImmutableContainer)) {
+                    if (CanMoveIntoContainer(container)) {
                         container.Items.Add(item);
                         item.Parent?.Remove(item);
                         item.AttachNewParent(container);
@@ -421,6 +421,17 @@ namespace NINA.Sequencer.Container {
 
         private void SetChanged() {
             GetRootContainer(this)?.SetChanged();
+        }
+
+        private static bool CanMoveIntoContainer(ISequenceContainer container) {
+            return container?.IsExpanded == true
+                && !(container is IImmutableContainer)
+                && CanAcceptSequenceItemPlacement(container);
+        }
+
+        private static bool CanAcceptSequenceItemPlacement(ISequenceContainer container) {
+            return !(container is ISequenceItemPlacementTarget placementTarget)
+                || placementTarget.CanAcceptSequenceItemPlacement;
         }
 
         public void MoveWithinIntoSequenceBlocks(int index, int newIndex) {
@@ -442,7 +453,7 @@ namespace NINA.Sequencer.Container {
             }
         }
 
-        public bool Remove(ISequenceItem item) {
+        public virtual bool Remove(ISequenceItem item) {
             lock (lockObj) {
                 if (item.Parent == this) {
                     item.AttachNewParent(null);
@@ -454,7 +465,7 @@ namespace NINA.Sequencer.Container {
             }
         }
 
-        public bool Remove(ISequenceCondition condition) {
+        public virtual bool Remove(ISequenceCondition condition) {
             lock (lockObj) {
                 if (condition.Parent == this) {
                     condition.AttachNewParent(null);
@@ -466,7 +477,7 @@ namespace NINA.Sequencer.Container {
             }
         }
 
-        public bool Remove(ISequenceTrigger trigger) {
+        public virtual bool Remove(ISequenceTrigger trigger) {
             lock (lockObj) {
                 if (trigger.Parent == this) {
                     trigger.AttachNewParent(null);

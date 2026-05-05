@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -145,6 +145,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
 
                             profileService.ActiveProfile.WeatherDataSettings.Id = WeatherData.Id;
                             profileService.ActiveProfile.WeatherDataSettings.LastDeviceName = WeatherData.DisplayName;
+
+                            BroadcastWeatherDataInfo();
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Weather Device. Id: {weatherdev.Id} Name: {weatherdev.Name} DisplayName: {weatherdev.DisplayName} Driver Version: {weatherdev.DriverVersion}");

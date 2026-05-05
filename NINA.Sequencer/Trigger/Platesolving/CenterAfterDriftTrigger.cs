@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -44,6 +44,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Sequencer.Logic;
+using NINA.Sequencer.Generators;
 
 namespace NINA.Sequencer.Trigger.Platesolving {
 
@@ -53,7 +55,9 @@ namespace NINA.Sequencer.Trigger.Platesolving {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Telescope")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class CenterAfterDriftTrigger : SequenceTrigger, IValidatable {
+    [UsesExpressions]
+
+    public partial class CenterAfterDriftTrigger : SequenceTrigger, IValidatable {
         private IProfileService profileService;
         private ITelescopeMediator telescopeMediator;
         private IFilterWheelMediator filterWheelMediator;
@@ -84,22 +88,17 @@ namespace NINA.Sequencer.Trigger.Platesolving {
             this.imageSaveMediator = imageSaveMediator;
             this.applicationStatusMediator = applicationStatusMediator;
             this.safetyMonitorMediator = safetyMonitorMediator;
-            DistanceArcMinutes = 10;
-            AfterExposures = 1;
             Coordinates = new InputCoordinates();
         }
 
-        private CenterAfterDriftTrigger(CenterAfterDriftTrigger cloneMe) : this(cloneMe.profileService, cloneMe.telescopeMediator, cloneMe.filterWheelMediator, cloneMe.guiderMediator, cloneMe.imagingMediator, cloneMe.cameraMediator, cloneMe.domeMediator, cloneMe.domeFollower, cloneMe.imageSaveMediator, cloneMe.applicationStatusMediator, cloneMe.safetyMonitorMediator) {
+        private CenterAfterDriftTrigger(CenterAfterDriftTrigger cloneMe) : this(cloneMe.profileService, cloneMe.telescopeMediator, cloneMe.filterWheelMediator, cloneMe.guiderMediator,
+            cloneMe.imagingMediator, cloneMe.cameraMediator, cloneMe.domeMediator, cloneMe.domeFollower, cloneMe.imageSaveMediator, cloneMe.applicationStatusMediator, cloneMe.safetyMonitorMediator) {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new CenterAfterDriftTrigger(this) {
-                TriggerRunner = (SequentialContainer)TriggerRunner.Clone(),
-                DistanceArcMinutes = DistanceArcMinutes,
-                AfterExposures = AfterExposures,
-                Coordinates = Coordinates?.Clone()
-            };
+        partial void AfterClone(CenterAfterDriftTrigger clone) {
+            TriggerRunner = (SequentialContainer)TriggerRunner.Clone();
+            Coordinates = Coordinates?.Clone();
         }
 
         private IList<string> issues = new List<string>();
@@ -115,18 +114,11 @@ namespace NINA.Sequencer.Trigger.Platesolving {
         [JsonProperty]
         public InputCoordinates Coordinates { get; set; }
 
-        private double distanceArcMinutes;
+        [IsExpression (Default = 10, Range = [0, ExpressionRange.NO_MAXIMUM, ExpressionRange.MIN_EXCLUSIVE], HasValidator = true)]
+        public partial double DistanceArcMinutes { get; set; }
 
-        [JsonProperty]
-        public double DistanceArcMinutes {
-            get => distanceArcMinutes;
-            set {
-                if (value > 0.0 && value != distanceArcMinutes) {
-                    distanceArcMinutes = value;
-                    RaisePropertyChanged(nameof(DistanceArcMinutes));
-                    RaisePropertyChanged(nameof(DistancePixels));
-                }
-            }
+        partial void DistanceArcMinutesExpressionValidator(Expression expr) {
+            RaisePropertyChanged("DistancePixels");
         }
 
         private bool inherited;
@@ -157,7 +149,8 @@ namespace NINA.Sequencer.Trigger.Platesolving {
         }
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
-            var centerSequenceItem = new Center(profileService, telescopeMediator, imagingMediator, filterWheelMediator, guiderMediator, domeMediator, domeFollower, new PlateSolverFactoryProxy(), new WindowServiceFactory()) {
+            var centerSequenceItem = new Center(profileService, telescopeMediator, imagingMediator, filterWheelMediator, guiderMediator, 
+                domeMediator, domeFollower, new PlateSolverFactoryProxy(), new WindowServiceFactory()) {
                 Coordinates = Coordinates
             };
             await centerSequenceItem.Execute(progress, token);
@@ -165,19 +158,8 @@ namespace NINA.Sequencer.Trigger.Platesolving {
             platesolvingImageFollower.LastCoordinates = null;
         }
 
-        private int afterExposures;
-
-        [JsonProperty]
-        public int AfterExposures {
-            get => afterExposures;
-            set {
-                afterExposures = value;
-                if (platesolvingImageFollower != null) {
-                    platesolvingImageFollower.AfterExposures = value;
-                }
-                RaisePropertyChanged();
-            }
-        }
+        [IsExpression (Default = 1, Range = [1, ExpressionRange.NO_MAXIMUM])]
+        public partial int AfterExposures { get; set; }
 
         private void PlatesolvingImageFollower_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             var follower = (PlatesolvingImageFollower)sender;
@@ -263,6 +245,7 @@ namespace NINA.Sequencer.Trigger.Platesolving {
                     SequenceBlockInitialize();
                 }
             }
+            Validate();
         }
 
         public override string ToString() {
@@ -282,6 +265,8 @@ namespace NINA.Sequencer.Trigger.Platesolving {
             if (!Inherited) {
                 i.Add(Loc.Instance["LblNoTarget"]);
             }
+
+            Expression.ValidateExpressions(i, AfterExposuresExpression, DistanceArcMinutesExpression);
 
             Issues = i;
             return i.Count == 0;

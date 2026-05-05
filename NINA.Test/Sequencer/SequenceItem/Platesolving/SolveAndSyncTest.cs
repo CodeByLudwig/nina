@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -187,6 +187,37 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
             captureSolver.Verify(x => x.Solve(It.IsAny<CaptureSequence>(), It.IsAny<CaptureSolverParameter>(), It.Is<IProgress<PlateSolveProgress>>(p => p == sut.PlateSolveStatusVM.Progress), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
 
             telescopeMediatorMock.Verify(x => x.Sync(It.Is<Coordinates>(c => c.RADegrees == coordinates.RADegrees && c.Dec == coordinates.Dec)), Times.Once);
+        }
+
+        [Test]
+        public async Task Execute_PassesPlateSolveGainToSyncCapture() {
+            var service = new Mock<IWindowService>();
+            var captureSolver = new Mock<ICaptureSolver>();
+            var coordinates = new Coordinates(Angle.ByDegree(10), Angle.ByDegree(20), Epoch.J2000);
+            CaptureSequence captureSequence = null;
+            captureSolver
+                .Setup(x => x.Solve(It.IsAny<CaptureSequence>(), It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()))
+                .Callback<CaptureSequence, CaptureSolverParameter, IProgress<PlateSolveProgress>, IProgress<ApplicationStatus>, CancellationToken>((seq, _, _, _, _) => captureSequence = seq)
+                .ReturnsAsync(new PlateSolveResult { Success = true, Coordinates = coordinates });
+
+            windowServiceFactoryMock.Setup(x => x.Create()).Returns(service.Object);
+            var plateSolveSettings = new Mock<IPlateSolveSettings>();
+            plateSolveSettings.SetupGet(x => x.Gain).Returns(456);
+            plateSolveSettings.SetupGet(x => x.NumberOfAttempts).Returns(1);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.PlateSolveSettings).Returns(plateSolveSettings.Object);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.TelescopeSettings).Returns(new Mock<ITelescopeSettings>().Object);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.CameraSettings).Returns(new Mock<ICameraSettings>().Object);
+
+            plateSolverFactoryMock.Setup(x => x.GetPlateSolver(It.IsAny<IPlateSolveSettings>())).Returns(new Mock<IPlateSolver>().Object);
+            plateSolverFactoryMock.Setup(x => x.GetBlindSolver(It.IsAny<IPlateSolveSettings>())).Returns(new Mock<IPlateSolver>().Object);
+            plateSolverFactoryMock.Setup(x => x.GetCaptureSolver(It.IsAny<IPlateSolver>(), It.IsAny<IPlateSolver>(), It.IsAny<IImagingMediator>(), It.IsAny<IFilterWheelMediator>())).Returns(captureSolver.Object);
+
+            telescopeMediatorMock.Setup(x => x.GetCurrentPosition()).Returns(coordinates);
+            telescopeMediatorMock.Setup(x => x.Sync(It.IsAny<Coordinates>())).ReturnsAsync(true);
+
+            await sut.Execute(default, CancellationToken.None);
+
+            captureSequence.Gain.Should().Be(456);
         }
 
         [Test]

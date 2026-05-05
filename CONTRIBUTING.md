@@ -86,11 +86,36 @@ git submodule update --init --recursive
    Required changes that might be requested during this phase have to be implemented.
    Once this is done, the pull request can be merged.
 
+## Repository navigation
+
+* Before making non-trivial changes, read the repository-level [AGENTS.md](AGENTS.md)
+* Read the `ARCHITECTURE.md` file in the project you are changing before making structural changes there
+* `AGENTS.md` links the project architecture documents and explains solution-wide boundaries, startup/composition, localization, plugin/sequencer surfaces, and other cross-cutting rules
+* If a change depends on durable project knowledge that is only in an issue, Discord thread, or review comment, add it to the appropriate checked-in doc, test, or automation.
+
 ## Coding rules
 
 * Always be backwards compatible when having some major rework of a module (e.g. settings change)
+* Follow the checked-in [`.editorconfig`](.editorconfig) for C# style and formatting
+* Prefer modern C# syntax that is supported by the target project instead of preserving older patterns unnecessarily
+* For new or refactored MVVM code, prefer the referenced `CommunityToolkit.Mvvm` APIs and attributes over older local relay-command wrappers
 * Follow clean code guidelines. There are many resources about this topic available online.
-* Try to unit test your code
+* Add or update focused unit tests for behavior changes. If a behavior change cannot reasonably be automated, explain the manual verification path in the pull request.
+* Avoid introducing new build warnings. If a warning must remain, make the reason clear in the pull request so it can be tracked deliberately.
+
+## AI / Tool-Assisted Contributions
+
+AI tools and other content-generating tools may be used to assist with contributions, but the human contributor remains fully responsible for everything submitted.
+
+Trivial tool use does not require disclosure. This includes examples such as formatting, spelling or grammar cleanup, identifier completion, simple boilerplate completion, and purely mechanical renames.
+
+If a meaningful amount of code, tests, changelog text, or documentation was generated or materially shaped by an AI tool or another non-trivial generation tool, disclose the tool or model used in the pull request description.
+
+Do not submit generated content that you do not fully understand or cannot defend during review.
+
+The submitting human is responsible for correctness, provenance, licensing compliance, and repository policy compliance.
+
+Maintainers may request additional explanation or validation for AI-assisted submissions, and may reject submissions that lack sufficient transparency, understanding, or verification.
 
 ## Branching model
 
@@ -174,6 +199,17 @@ This database will be automatically created by the EntityFramework based on the 
   * These might seem verbose at first, but they really help reading and understanding the assertions
 * For detailed information about how to use these frameworks please go to their respective homepages
 
+## Running AUTs from the command line
+
+The repository CI uses the .NET CLI on Windows. The same basic flow can be used locally:
+
+```powershell
+dotnet restore NINA.sln
+dotnet build NINA/NINA.csproj --configuration Debug --no-restore
+dotnet build NINA.Test/NINA.Test.csproj --configuration Debug --no-restore
+dotnet test NINA.Test/NINA.Test.csproj --configuration Debug --no-build -p:PlatformTarget=x64
+```
+
 ## Running AUTs in Visual Studio
 
 * First double check that your processor architecture for AUTs is set to x64
@@ -189,11 +225,11 @@ This database will be automatically created by the EntityFramework based on the 
 ## Localization
 
 * All strings that are displayed inside the User Interface should be localized using the Locale Manager
-  * In Code Behind: Locale.Loc.Instance["[Label key]"]
+  * In Code Behind: `NINA.Core.Locale.Loc.Instance["[Label key]"]`
   * In XAML: 
-    * Import namespace: xmlns:ns="clr-namespace:NINA.Locale"
+    * Import namespace: `xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"`
     * Use via binding like Text="{ns:Loc [Label key]}"
-* To introduce a new label you just need to add the new key and value into "NINA/Locale/Locale.resx" file. The other localized files will be managed by an external integration automatically.
+* To introduce a new label, add the new key and value only to `NINA.Core/Locale/Locale.resx`. The other localized files will be managed by an external integration automatically.
 * All translations are managed by an external page  at [Crowdin](https://nina.crowdin.com) and automatically integrated into the repository
   * For more information on how to contribute to the localization refer to our documentation in the contributing section
 
@@ -202,26 +238,15 @@ This database will be automatically created by the EntityFramework based on the 
 
 * Before making large changes, that will change existing patterns or disrupt ongoing features, please first discuss this via an issue or in discord, before starting to work on the changes! This way we can make sure, that it is the proper time for this change.  
 * Make sure that only relevant changes are inside the pull request  
-* Validate that all unit tests are sill passing  
+* Validate that all unit tests are still passing
 * Test your changes *thoroughly* and give a short overview on how you tested your changes in the pull request's description
+* Include any notable skipped tests, warnings, environment constraints, or manual verification limits in the pull request description.
 * Add yourself to the AUTHORS file, so you will be given proper credit!  
 * Create **one pull request per feature/fix**
 * Create your pull requests for new features only against the **develop** branch  
   * Only critical Hotfixes may be created against *master* branch and require a new PATCH version as described in [Versioning in N.I.N.A.]  
   
-* Fill out the pull request description template
-  
-```
-What is the purpose of this Pull Request?
-
-How were the changes tested?
-
-Are there relevant Issues in the tracker that this PR will fix?
-
-Screenshots
-
-Notes
-```
+* Fill out the live pull request template in [`.github/pull_request_template.md`](.github/pull_request_template.md)
 
 ## NINA.SetupBundle Prerequisites
 
@@ -237,4 +262,4 @@ Notes
 * If you create a VM that is used by the UI or refactor things out of VMs into generalized structures bind them in ``IoCBindings.cs``, so they can be easily injected into the VMs you removed them from
 	* if you create a VM that has an anchorable view, inject it into ``DockManagerVM`` so it's automatically instantiated
 	* if the VM you create is for Equipment, do the same but in EquipmentVM
-	* If you are creating a first-level composition object that is used in ``MainWindow.xaml``/``MainWindowViewModel.cs`` create it in ``CompositionRoot.cs`` and bind it as a Singleton in ``IoCBindings.cs``
+	* If you are creating a first-level composition object that is used in ``MainWindow.xaml``/``MainWindowVM.cs`` create it in ``CompositionRoot.cs`` and bind it as a Singleton in ``IoCBindings.cs``

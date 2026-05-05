@@ -1,5 +1,5 @@
 <!--
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -32,6 +32,7 @@
     <converters:InverseCollectionContainsItemsToVisibilityConverter x:Key="InverseCollectionContainsItemsToVisibilityConverter" />
     <converters:MinusOneToEmptyStringConverter x:Key="MinusOneToEmptyStringConverter" />
     <astroConverters:ArcsecToLabelConverter x:Key="ArcsecToLabelConverter" />
+    <astroConverters:ImageStatisticsUnitConverter x:Key="ImageStatisticsUnitConverter" />
     <converters:BoolToLabelConverter x:Key="BoolToLabelConverter" />
     <astroConverters:MoonPhaseToGeometryConverter x:Key="MoonPhaseToGeometryConverter" />
     <converters:MultiMarginConverter x:Key="MultiMarginConverter" />
@@ -92,4 +93,8 @@
     <converters:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />
     <converters:ZeroToBooleanTrueConverter x:Key="ZeroToBooleanTrueConverter" />
     <astroConverters:ReverseAngleConverter x:Key="ReverseAngleConverter" />
+    <converters:OxyPlotDateTimeConverter x:Key="OxyPlotDateTimeConverter" />
+    <converters:MeridianXPositionConverter x:Key="MeridianXPositionConverter" />
+    <converters:MeridianTextAlignmentConverter x:Key="MeridianTextAlignmentConverter" />
+    <converters:ClampDoubleConverter x:Key="ClampDoubleConverter" />
 </ResourceDictionary>

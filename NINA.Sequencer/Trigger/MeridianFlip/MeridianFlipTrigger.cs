@@ -1,7 +1,7 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -176,6 +176,10 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
             return TimeSpan.FromHours(TimeToMeridianFlip);
         }
 
+        protected virtual TimeSpan GetReservedExecutionDuration(ISequenceItem nextItem) {
+            return nextItem?.GetEstimatedDuration() ?? TimeSpan.Zero;
+        }
+
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
             var telescopeInfo = telescopeMediator.GetInfo();
             //var settings = profileService.ActiveProfile.MeridianFlipSettings;
@@ -215,7 +219,7 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                 return false;
             }
 
-            var nextInstructionTime = nextItem?.GetEstimatedDuration().TotalSeconds ?? 0;
+            var nextInstructionTime = GetReservedExecutionDuration(nextItem).TotalSeconds;
 
             //The time to meridian flip reported by the telescope is the latest time for a flip to happen
             var minimumTimeRemaining = CalculateMinimumTimeRemaining();

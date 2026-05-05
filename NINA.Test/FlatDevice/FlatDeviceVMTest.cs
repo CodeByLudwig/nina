@@ -1,6 +1,6 @@
 #region "copyright"
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -210,8 +210,15 @@ namespace NINA.Test.FlatDevice {
         public async Task TestConnectSuccess(bool expected) {
             mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, mockFlatDevice.Object);
             mockFlatDevice.Setup(m => m.Id).Returns("Something");
+            mockFlatDevice.Setup(m => m.Connected).Returns(expected);
             mockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>())).Returns(Task.FromResult(expected));
             (await sut.Connect()).Should().Be(expected);
+
+            if (expected) {
+                mockFlatDeviceMediator.Verify(m => m.Broadcast(It.Is<FlatDeviceInfo>(info => info.Connected && info.DeviceId == "Something")), Times.AtLeastOnce);
+            } else {
+                mockFlatDeviceMediator.Verify(m => m.Broadcast(It.Is<FlatDeviceInfo>(info => info.Connected)), Times.Never);
+            }
         }
 
         [Test]

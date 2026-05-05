@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -170,6 +170,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
 
                             profileService.ActiveProfile.SafetyMonitorSettings.Id = sm.Id;
                             profileService.ActiveProfile.SafetyMonitorSettings.LastDeviceName = sm.DisplayName;
+
+                            BroadcastMonitorInfo();
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Safety Monitor. Id: {sm.Id} Name: {sm.Name} DisplayName: {sm.DisplayName} Driver Version: {sm.DriverVersion}");

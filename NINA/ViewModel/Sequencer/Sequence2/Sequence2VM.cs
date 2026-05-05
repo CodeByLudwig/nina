@@ -1,6 +1,6 @@
-﻿#region "copyright"
+#region "copyright"
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -9,29 +9,18 @@
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 #endregion "copyright"
-using Accord.IO;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
-using NINA.Equipment.Equipment.MyPlanetarium;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer;
-using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.DragDrop;
-using NINA.Sequencer.SequenceItem;
-using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.Serialization;
-using NINA.Sequencer.Trigger;
 using NINA.Utility;
-using NINA.Astrometry;
-using NINA.ViewModel.FramingAssistant;
-using NINA.ViewModel.ImageHistory;
-using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -46,17 +35,13 @@ using NINA.Core.MyMessageBox;
 using NINA.Core.Locale;
 using NINA.Core.Utility.Notification;
 using NINA.Core.Model;
-using NINA.Astrometry.Interfaces;
-using NINA.Equipment.Interfaces;
 using NINA.WPF.Base.ViewModel;
-using NINA.WPF.Base.Interfaces.ViewModel;
-using NINA.Sequencer.SequenceItem.Imaging;
-using NINA.Sequencer.Trigger.Autofocus;
 using NINA.Equipment.Equipment.MyCamera;
 using System.ComponentModel;
 using NINA.Core.Utility.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using NINA.Sequencer.Logic;
 
 namespace NINA.ViewModel.Sequencer {
 
@@ -66,6 +51,7 @@ namespace NINA.ViewModel.Sequencer {
         private ISequenceMediator sequenceMediator;
         private IApplicationMediator applicationMediator;
         private ICameraMediator cameraMediator;
+        private readonly ITemplateLinkResolver templateLinkResolver;
         private CancellationTokenSource backgroundValidationCts;
         private Task backgroundValidationTask;
 
@@ -76,7 +62,9 @@ namespace NINA.ViewModel.Sequencer {
             IApplicationMediator applicationMediator,
             IApplicationStatusMediator applicationStatusMediator,
             ICameraMediator cameraMediator,
-            ISequencerFactory factory
+            ISequencerFactory factory,
+            ISymbolBroker symbolBroker,
+            ITemplateLinkResolver templateLinkResolver
             ) : base(profileService) {
 
             this.commandLineOptions = commandLineOptions;
@@ -85,6 +73,8 @@ namespace NINA.ViewModel.Sequencer {
             this.sequenceMediator = sequenceMediator;
             this.applicationMediator = applicationMediator;
             this.cameraMediator = cameraMediator;
+            this.templateLinkResolver = templateLinkResolver;
+            SymbolBroker = symbolBroker;
             cameraMediator.RegisterConsumer(this);
 
             SequencerFactory = factory;
@@ -119,6 +109,8 @@ namespace NINA.ViewModel.Sequencer {
                 RaisePropertyChanged();
             }
         }
+
+        public ISymbolBroker SymbolBroker { get; }
 
         private ISequencer sequencer;
         public ISequencer Sequencer {
@@ -209,8 +201,10 @@ namespace NINA.ViewModel.Sequencer {
             return Task.Run(async () => {
                 await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
                     SequenceJsonConverter = new SequenceJsonConverter(SequencerFactory);
-                    TemplateController = new TemplateController(SequenceJsonConverter, profileService);
+                    TemplateController = new TemplateController(SequenceJsonConverter, profileService, templateLinkResolver);
                     TargetController = new TargetController(SequenceJsonConverter, profileService);
+                    SymbolController = new SymbolController(SymbolBroker, profileService);
+                    SymbolFunctionController = new SymbolFunctionController(SymbolBroker, profileService);
 
                     var rootContainer = SequencerFactory.GetContainer<SequenceRootContainer>();
                     rootContainer.Name = Loc.Instance["LblAdvancedSequenceTitle"];
@@ -239,9 +233,46 @@ namespace NINA.ViewModel.Sequencer {
                     }
 
                     ClearHasChanged();
+                    templateLinkResolver.TemplatesChanged += TemplateLinkResolver_TemplatesChanged;
+                    ResolveLinkedTemplates();
 
                 }));
             });
+        }
+
+        private void TemplateLinkResolver_TemplatesChanged(object sender, EventArgs e) {
+            if (IsRunning) {
+                return;
+            }
+
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => ResolveLinkedTemplates()));
+        }
+
+        private void ResolveLinkedTemplates(bool materializeAll = false) {
+            if (Sequencer?.MainContainer == null) {
+                return;
+            }
+
+            ResolveLinkedTemplates(Sequencer.MainContainer, 0, materializeAll);
+        }
+
+        private void ResolveLinkedTemplates(ISequenceContainer container, int depth, bool materializeAll) {
+            if (depth > 64) {
+                Logger.Warning("Linked template refresh stopped because the linked template nesting is too deep.");
+                return;
+            }
+
+            if (container is LinkedTemplateContainer linkedTemplateContainer && !linkedTemplateContainer.IsEditing) {
+                if (materializeAll || linkedTemplateContainer.IsMaterialized) {
+                    linkedTemplateContainer.TryResolveTemplate();
+                } else {
+                    linkedTemplateContainer.RefreshLinkState();
+                }
+            }
+
+            foreach (ISequenceContainer childContainer in container.GetItemsSnapshot().OfType<ISequenceContainer>()) {
+                ResolveLinkedTemplates(childContainer, depth + 1, materializeAll);
+            }
         }
 
         private Task RunBackgroundValidationTimer(CancellationToken token) {
@@ -399,11 +430,13 @@ namespace NINA.ViewModel.Sequencer {
 
         private void LoadSequenceFromFile(string file) {
             try {
+                UserSymbol.ClearUserSymbols();
                 var json = File.ReadAllText(file);
-                var container = SequenceJsonConverter.Deserialize(json);
+                var container = SequenceJsonConverter.Deserialize(json, file);
                 if (container is ISequenceRootContainer root) {
                     SavePath = file;
                     Sequencer.MainContainer = root;
+                    ResolveLinkedTemplates();
                     Sequencer.MainContainer.Validate();
                     SavePath = file;
                 } else if (container != null) {
@@ -419,6 +452,7 @@ namespace NINA.ViewModel.Sequencer {
                     // Save path will be empty, as the origin file is not a complete sequencer file
                     SavePath = string.Empty;
                     Sequencer.MainContainer = rootContainer;
+                    ResolveLinkedTemplates();
                     Sequencer.MainContainer.Validate();
 
                 } else {
@@ -506,11 +540,22 @@ namespace NINA.ViewModel.Sequencer {
             }
         }
 
+        private List<Symbol> dataSymbols;
+
+        public List<Symbol> DataSymbols {
+            get => dataSymbols;
+            set {
+                dataSymbols = value;
+                RaisePropertyChanged("DataSymbols");
+            }
+        }
+
         public ISequencerFactory SequencerFactory { get; }
 
         public TemplateController TemplateController { get; private set; }
         public TargetController TargetController { get; private set; }
-
+        public SymbolController SymbolController { get; private set; }
+        public SymbolFunctionController SymbolFunctionController { get; private set; }
         public SequenceJsonConverter SequenceJsonConverter { get; private set; }
 
         private bool isRunning;
@@ -559,9 +604,12 @@ namespace NINA.ViewModel.Sequencer {
             cts?.Dispose();
             cts = new CancellationTokenSource();
             var token = cts.Token;
-            IsRunning = true;
-            TaskBarProgressState = TaskbarItemProgressState.Normal;
             try {
+                await templateLinkResolver.WaitForInitialLoad(token);
+                ResolveLinkedTemplates(materializeAll: true);
+
+                IsRunning = true;
+                TaskBarProgressState = TaskbarItemProgressState.Normal;
                 cameraMediator.RegisterCaptureBlock(this);
 
                 //Set base containers to created to rerun

@@ -1,7 +1,7 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -56,7 +56,9 @@ namespace NINA.Test.Sequencer.SequenceItem.Switch {
 
         [Test]
         public void Validate_NoIssues() {
-            switchMediatorMock.Setup(x => x.GetInfo()).Returns(new SwitchInfo() { Connected = true, WritableSwitches = new System.Collections.ObjectModel.ReadOnlyCollection<IWritableSwitch>(new List<IWritableSwitch>() { new Mock<IWritableSwitch>().Object }) });
+            var dummy = new Mock<IWritableSwitch>();
+            dummy.SetupGet(x => x.Maximum).Returns(1);
+            switchMediatorMock.Setup(x => x.GetInfo()).Returns(new SwitchInfo() { Connected = true, WritableSwitches = new System.Collections.ObjectModel.ReadOnlyCollection<IWritableSwitch>(new List<IWritableSwitch>() { dummy.Object }) });
 
             var sut = new SetSwitchValue(switchMediatorMock.Object);
             sut.SwitchIndex = 0;
@@ -148,6 +150,33 @@ namespace NINA.Test.Sequencer.SequenceItem.Switch {
             await sut.Execute(default, default);
 
             switchMediatorMock.Verify(x => x.SetSwitchValue(It.Is<short>(idx => idx == index), It.Is<double>(t => t == value), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        /// <summary>
+        /// Verifies that SetSwitchValue evaluates its value expression before sending the requested switch value to the mediator.
+        /// </summary>
+        [Test]
+        public async Task Execute_UsesEvaluatedValueExpression() {
+            var writableSwitch = new Mock<IWritableSwitch>();
+            writableSwitch.Setup(x => x.Minimum).Returns(0);
+            writableSwitch.Setup(x => x.Maximum).Returns(20);
+
+            switchMediatorMock.Setup(x => x.GetInfo()).Returns(new SwitchInfo() {
+                Connected = true,
+                WritableSwitches = new System.Collections.ObjectModel.ReadOnlyCollection<IWritableSwitch>(
+                    new List<IWritableSwitch>() {
+                        writableSwitch.Object
+                    }
+                )
+            });
+
+            var sut = new SetSwitchValue(switchMediatorMock.Object);
+            sut.SwitchIndex = 0;
+            sut.ValueDefinition = "4 + 6.5";
+
+            await sut.Execute(default, default);
+
+            switchMediatorMock.Verify(x => x.SetSwitchValue(0, 10.5, It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]

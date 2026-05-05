@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -421,7 +421,8 @@ namespace NINA.Profile {
                     }
 
                     // make a backup of original file
-                    if (fs?.Length > 0) {
+                    bool hasExistingProfileContent = fs?.Length > 0;
+                    if (hasExistingProfileContent) {
                         fs.Flush(true);
                         File.Copy(Location, backup, true);
                     }
@@ -429,7 +430,11 @@ namespace NINA.Profile {
                     // release file lock and move journal to actual file
                     fs?.Close();
                     fs?.Dispose();
-                    File.Replace(journal, Location, backup);
+                    if (hasExistingProfileContent) {
+                        File.Replace(journal, Location, backup);
+                    } else {
+                        File.Move(journal, Location, true);
+                    }
 
                     // re-open file for lock
                     fs = new FileStream(Location, FileMode.Open, FileAccess.ReadWrite, FileShare.Read);

@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -628,10 +628,10 @@ namespace NINA.Image.FileFormat.FITS {
             if (!double.IsNaN(metaData.Observer.Elevation)) {
                 Add("SITEELEV", metaData.Observer.Elevation, "[m] Observation site elevation");
             }
-            if (!double.IsNaN(metaData.Observer.Elevation)) {
+            if (!double.IsNaN(metaData.Observer.Latitude)) {
                 Add("SITELAT", metaData.Observer.Latitude, "[deg] Observation site latitude");
             }
-            if (!double.IsNaN(metaData.Observer.Elevation)) {
+            if (!double.IsNaN(metaData.Observer.Longitude)) {
                 Add("SITELONG", metaData.Observer.Longitude, "[deg] Observation site longitude");
             }
             if (!string.IsNullOrEmpty(metaData.Observer.Name)) {
@@ -640,7 +640,7 @@ namespace NINA.Image.FileFormat.FITS {
             if (!string.IsNullOrEmpty(metaData.Observer.Observatory)) {
                 Add("OBSERVAT", metaData.Observer.Observatory, "Observatory name");
             }
-            if (!string.IsNullOrEmpty(metaData.Observer.Name)) {
+            if (!string.IsNullOrEmpty(metaData.Observer.Site)) {
                 Add("SITENAME", metaData.Observer.Site, "Observatory site name");
             }
 

@@ -1,6 +1,6 @@
 ﻿#region "copyright"
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -208,6 +208,7 @@ namespace NINA.Test.Focuser {
             deviceInfo.TempCompAvailable.Should().Be(tempCompAvailable);
             deviceInfo.TempComp.Should().Be(tempComp);
             deviceInfo.Temperature.Should().Be(temperature);
+            mockFocuserMediator.Verify(m => m.Broadcast(It.Is<FocuserInfo>(info => info.Connected && info.Name == "TestFocuserName" && info.Position == position)), Times.AtLeastOnce);
         }
     }
 }

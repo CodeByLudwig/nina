@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -34,6 +34,17 @@ namespace NINA.Test.Sequencer.View.Converter {
         public void Convert_ParallelStrategy_Collapsed() {
             var container = new Mock<ISequenceContainer>();
             container.Setup(x => x.Strategy).Returns(new ParallelStrategy());
+
+            var sut = new StrategyEvaluatesConditionsAndTriggersToVisibilityConverter();
+            var conversion = sut.Convert(container.Object, default, default, default);
+
+            conversion.Should().Be(Visibility.Collapsed);
+        }
+
+        [Test]
+        public void Convert_ConditionalStrategy_Collapsed() {
+            var container = new Mock<ISequenceContainer>();
+            container.Setup(x => x.Strategy).Returns(new ConditionalStrategy());
 
             var sut = new StrategyEvaluatesConditionsAndTriggersToVisibilityConverter();
             var conversion = sut.Convert(container.Object, default, default, default);

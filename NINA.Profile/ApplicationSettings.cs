@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -60,6 +60,7 @@ namespace NINA.Profile {
             pageSize = 50;
             notificationCorner = NotificationCorner.BottomRight;
             notificationWorkArea = NotificationWorkArea.PrimaryScreen;
+            coloredContainerBorders = true;
         }
 
         [DataMember]
@@ -196,6 +197,19 @@ namespace NINA.Profile {
             set {
                 if (notificationCorner != value) {
                     notificationCorner = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool coloredContainerBorders;
+
+        [DataMember]
+        public bool ColoredContainerBorders {
+            get => coloredContainerBorders;
+            set {
+                if (coloredContainerBorders != value) {
+                    coloredContainerBorders = value;
                     RaisePropertyChanged();
                 }
             }

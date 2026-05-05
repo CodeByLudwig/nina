@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -254,6 +254,18 @@
                                                 <Setter Property="Header" Value="{StaticResource TemplateMenuHeader}" />
                                                 <Setter Property="Icon" Value="{StaticResource TemplateMenuIcon}" />
                                                 <EventSetter Event="Click" Handler="MenuItemTemplate_Click" />
+                                            </Style>
+                                        </MenuItem.ItemContainerStyle>
+                                    </MenuItem>
+                                    <MenuItem MinHeight="30" ItemsSource="{Binding Source={StaticResource ViewModel}, Path=Data.TemplateController.TemplatesMenuView}">
+                                        <MenuItem.Header>
+                                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblLinkedTemplates}" />
+                                        </MenuItem.Header>
+                                        <MenuItem.ItemContainerStyle>
+                                            <Style TargetType="MenuItem">
+                                                <Setter Property="Header" Value="{StaticResource TemplateMenuHeader}" />
+                                                <Setter Property="Icon" Value="{StaticResource TemplateMenuIcon}" />
+                                                <EventSetter Event="Click" Handler="MenuItemLinkedTemplate_Click" />
                                             </Style>
                                         </MenuItem.ItemContainerStyle>
                                     </MenuItem>

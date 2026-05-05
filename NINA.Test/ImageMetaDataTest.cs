@@ -1,6 +1,6 @@
 #region "copyright"
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -303,8 +303,8 @@ namespace NINA.Test {
             Assert.That(sut.Telescope.FocalRatio, Is.EqualTo(double.NaN));
 
             Assert.That(sut.Telescope.Coordinates.Epoch, Is.EqualTo(Epoch.J2000));
-            Assert.That(sut.Telescope.Coordinates.RADegrees, Is.EqualTo(59.694545025696307d));
-            Assert.That(sut.Telescope.Coordinates.Dec, Is.EqualTo(28.945185789035015d));
+            Assert.That(sut.Telescope.Coordinates.RADegrees, Is.EqualTo(59.694545007067305d));
+            Assert.That(sut.Telescope.Coordinates.Dec, Is.EqualTo(28.945185789004316d));
             Assert.That(sut.Telescope.SideOfPier, Is.EqualTo(PierSide.pierWest));
         }
 
@@ -334,8 +334,8 @@ namespace NINA.Test {
             };
 
             Assert.That(sut.Target.Coordinates.Epoch, Is.EqualTo(Epoch.J2000));
-            Assert.That(sut.Target.Coordinates.RADegrees, Is.EqualTo(59.694545025696307d));
-            Assert.That(sut.Target.Coordinates.Dec, Is.EqualTo(28.945185789035015d));
+            Assert.That(sut.Target.Coordinates.RADegrees, Is.EqualTo(59.694545007067305d));
+            Assert.That(sut.Target.Coordinates.Dec, Is.EqualTo(28.945185789004316d));
         }
 
         [Test]

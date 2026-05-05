@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -22,6 +22,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NINA.Plugin")]
 [assembly: AssemblyDescription("This assembly contains the plugin related components of N.I.N.A.")]
 [assembly: AssemblyConfiguration("")]
+[assembly: InternalsVisibleTo("NINA.Test")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from

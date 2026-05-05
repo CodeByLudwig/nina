@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -22,6 +22,8 @@ using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
@@ -31,7 +33,9 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     [ExportMetadata("Category", "Lbl_SequenceCategory_FlatDevice")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SetBrightness : SequenceItem, IValidatable {
+    [UsesExpressions]
+
+    public partial class SetBrightness : SequenceItem, IValidatable {
 
         [ImportingConstructor]
         public SetBrightness(IFlatDeviceMediator flatDeviceMediator) {
@@ -40,12 +44,6 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
         private SetBrightness(SetBrightness cloneMe) : this(cloneMe.flatDeviceMediator) {
             CopyMetaData(cloneMe);
-        }
-
-        public override object Clone() {
-            return new SetBrightness(this) {
-                Brightness = Brightness
-            };
         }
 
         private IFlatDeviceMediator flatDeviceMediator;
@@ -59,13 +57,21 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
-        private int brightness;
+        [IsExpression]
+        public partial int Brightness { get; set; }
 
-        [JsonProperty]
-        public int Brightness {
-            get => brightness;
+        public int MinBrightness {
+            get => field;
             set {
-                brightness = value;
+                field = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int MaxBrightness {
+            get => field;
+            set {
+                field = value;
                 RaisePropertyChanged();
             }
         }
@@ -74,15 +80,15 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             await flatDeviceMediator.SetBrightness(Brightness, progress, token);
 
             var brightnessState = flatDeviceMediator.GetInfo().Brightness;
-            var minBrightness = flatDeviceMediator.GetInfo().MinBrightness;
-            var maxBrightness = flatDeviceMediator.GetInfo().MaxBrightness;
+            MinBrightness = flatDeviceMediator.GetInfo().MinBrightness;
+            MaxBrightness = flatDeviceMediator.GetInfo().MaxBrightness;
 
             // we shouldn't consider the flatdevice bringing the brightness up to to min or down to the max a failure
-            if (Brightness < minBrightness && brightnessState == minBrightness) {
+            if (Brightness < MinBrightness && brightnessState == MinBrightness) {
                 return;
             }
 
-            if (Brightness > maxBrightness && brightnessState == maxBrightness) {
+            if (Brightness > MaxBrightness && brightnessState == MaxBrightness) {
                 return;
             }
 
@@ -101,11 +107,18 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                     i.Add(Loc.Instance["LblFlatDeviceCannotControlBrightness"]);
                 }
             }
+
+            MinBrightness = flatDeviceMediator.GetInfo().MinBrightness;
+            MaxBrightness = flatDeviceMediator.GetInfo().MaxBrightness;
+
+            Expression.ValidateExpressions(i, BrightnessExpression);
+            
             Issues = i;
             return i.Count == 0;
         }
 
         public override void AfterParentChanged() {
+            base.AfterParentChanged();
             Validate();
         }
 

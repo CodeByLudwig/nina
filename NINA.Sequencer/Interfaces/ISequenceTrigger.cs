@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -52,5 +52,10 @@ namespace NINA.Sequencer.Trigger {
         /// <param name="token"></param>
         /// <returns></returns>
         Task Run(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token);
+
+        /// <summary>
+        /// Interrupts the currently running trigger and resets its progress.
+        /// </summary>
+        void InterruptAndReset();
     }
 }

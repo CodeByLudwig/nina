@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -64,13 +64,14 @@ namespace NINA.Test.Sequencer.SequenceItem.SafetyMonitor {
         }
 
         [Test]
-        public void Validate_NotConnected_OneIssue() {
+        public void Validate_NotConnected_NoIssue() {
             safetyMonitorMock.Setup(x => x.GetInfo()).Returns(new SafetyMonitorInfo() { Connected = false });
 
             var sut = new WaitUntilSafe(safetyMonitorMock.Object);
             var valid = sut.Validate();
 
-            valid.Should().BeFalse();
+            // Should still run when disconnected but report issues
+            valid.Should().BeTrue();
 
             sut.Issues.Should().HaveCount(1);
         }

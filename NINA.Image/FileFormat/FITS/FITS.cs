@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -77,8 +77,8 @@ namespace NINA.Image.FileFormat.FITS {
                 if (compressionFlag > 0) {
                     // When the image is compresse, we decompress it into a temporary file
                     var tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".fits");
-                    CfitsioNative.fits_create_file(out var ptr, tempFile, out status);
-                    CfitsioNative.CheckStatus("fits_create_file", status);
+                    CfitsioNative.fits_create_diskfile(out var ptr, tempFile, out status);
+                    CfitsioNative.CheckStatus("fits_create_diskfile", status);
 
                     CfitsioNative.fits_img_decompress(fitsPtr, ptr, out status);
                     CfitsioNative.CheckStatus("fits_img_decompress", status);

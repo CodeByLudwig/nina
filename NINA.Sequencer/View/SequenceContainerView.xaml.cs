@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -59,6 +59,14 @@ namespace NINA.View.Sequencer {
             set => SetValue(SequenceContainerContentProperty, value);
         }
 
+        public static readonly DependencyProperty HeaderContentProperty =
+            DependencyProperty.Register(nameof(HeaderContent), typeof(object), typeof(SequenceContainerView));
+
+        public object HeaderContent {
+            get => (object)GetValue(HeaderContentProperty);
+            set => SetValue(HeaderContentProperty, value);
+        }
+
         public static readonly DependencyProperty ShowDetailsProperty =
             DependencyProperty.Register(nameof(ShowDetails), typeof(bool), typeof(SequenceContainerView), new PropertyMetadata(true));
 
@@ -84,6 +92,18 @@ namespace NINA.View.Sequencer {
                 if (ctrl.DataContext is TemplatedSequenceContainer template) {
                     if (this.DataContext is SequenceContainer container) {
                         var p = new DropIntoParameters(template as IDroppable);
+                        p.Position = DropTargetEnum.Center;
+                        container.DropIntoCommand.Execute(p);
+                    }
+                }
+            }
+        }
+
+        private void MenuItemLinkedTemplate_Click(object sender, RoutedEventArgs e) {
+            if (sender is Control ctrl) {
+                if (ctrl.DataContext is TemplatedSequenceContainer template) {
+                    if (this.DataContext is SequenceContainer container) {
+                        DropIntoParameters p = new DropIntoParameters(template.CreateLinkedContainer());
                         p.Position = DropTargetEnum.Center;
                         container.DropIntoCommand.Execute(p);
                     }

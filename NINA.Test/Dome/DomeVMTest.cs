@@ -1,6 +1,6 @@
 ﻿#region "copyright"
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -142,6 +142,17 @@ namespace NINA.Test.Dome {
             var connectionResult = await domeVM.Connect();
             Assert.That(connectionResult, Is.True);
             return domeVM;
+        }
+
+        /// <summary>
+        /// Verifies that a successful dome connection broadcasts the populated connected info snapshot.
+        /// This protects mediator consumers that need dome state immediately after Connect completes.
+        /// </summary>
+        [Test]
+        public async Task Test_Connect_BroadcastsConnectedInfo() {
+            await CreateSUT();
+
+            mockDomeMediator.Verify(x => x.Broadcast(It.Is<DomeInfo>(info => info.Connected && info.DeviceId == domeId)), Times.AtLeastOnce);
         }
 
         [Test]

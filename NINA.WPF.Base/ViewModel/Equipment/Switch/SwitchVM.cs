@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -250,8 +250,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
 
                             RaisePropertyChanged(nameof(WritableSwitches));
                             token.ThrowIfCancellationRequested();
-                            BroadcastSwitchInfo();
-                            token.ThrowIfCancellationRequested();
 
                             updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
                             _ = updateTimer.Run();
@@ -260,12 +258,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                             profileService.ActiveProfile.SwitchSettings.LastDeviceName = switchHub.DisplayName;
                             Notification.ShowSuccess(Loc.Instance["LblSwitchConnected"]);
 
+                            BroadcastSwitchInfo();
+
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Switch. Id: {switchHub.Id} Name: {switchHub.Name} DisplayName: {switchHub.DisplayName} Driver Version: {switchHub.DriverVersion}");
 
                             return true;
                         } else {
-                            Notification.ShowError(String.Format(Loc.Instance["LblUnableToconnectTo"], DeviceChooserVM.SelectedDevice.Name));
                             SwitchInfo.Connected = false;
                             this.SwitchHub = null;
                             return false;

@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -36,7 +36,8 @@ namespace NINA.View.Sequencer.Converter {
                 throw new ArgumentException("Invalid Type for converter - Must be ISequenceContainer");
             }
 
-            if (container.Strategy.GetType() == typeof(ParallelStrategy)) {
+            if (container.Strategy.GetType() == typeof(ParallelStrategy)
+                || container.Strategy.GetType() == typeof(ConditionalStrategy)) {
                 return Visibility.Collapsed;
             } else {
                 return Visibility.Visible;

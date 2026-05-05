@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -147,7 +147,7 @@ namespace NINA.PlateSolving.Solvers {
                 args.Add($"-r {parameter.SearchRadius}");
 
                 var ra = Math.Round(parameter.Coordinates.RA, 6);
-                //Right Ascension in degrees
+                //Right Ascension in hours
                 args.Add($"-ra {ra.ToString(CultureInfo.InvariantCulture)}");
 
                 var spd = Math.Round(parameter.Coordinates.Dec + 90.0, 6);

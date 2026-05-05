@@ -1,7 +1,7 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -20,11 +20,8 @@ using NINA.Core.Utility;
 namespace NINA.Sequencer.Serialization {
 
     public class SequenceContainerCreationConverter : JsonCreationConverter<ISequenceContainer> {
-        private ISequencerFactory factory;
 
-        public SequenceContainerCreationConverter(ISequencerFactory factory) {
-            this.factory = factory;
-        }
+        public SequenceContainerCreationConverter(ISequencerFactory factory) : base(factory) { }
 
         public override ISequenceContainer Create(Type objectType, JObject jObject) {
             if (jObject.TryGetValue("$type", out var token)) {
@@ -32,9 +29,12 @@ namespace NINA.Sequencer.Serialization {
                 if (t == null) {
                     return new UnknownSequenceContainer(token?.ToString());
                 }
+                if (t == typeof(LinkedTemplateContainer)) {
+                    RemoveLinkedTemplateRuntimeState(jObject);
+                }
                 try {
-                    var method = factory.GetType().GetMethod(nameof(factory.GetContainer)).MakeGenericMethod(new Type[] { t });
-                    var obj = method.Invoke(factory, null);
+                    var method = Factory.GetType().GetMethod(nameof(Factory.GetContainer)).MakeGenericMethod(new Type[] { t });
+                    var obj = method.Invoke(Factory, null);
                     if(obj == null) {
                         Logger.Error($"Encountered unknown sequence container: {token?.ToString()}");
                         return new UnknownSequenceContainer(token?.ToString());                        
@@ -47,6 +47,14 @@ namespace NINA.Sequencer.Serialization {
             } else {
                 return new UnknownSequenceContainer(token?.ToString());
             }
+        }
+
+        private static void RemoveLinkedTemplateRuntimeState(JObject jObject) {
+            jObject.Remove(nameof(SequenceContainer.Items));
+            jObject.Remove(nameof(SequenceContainer.Conditions));
+            jObject.Remove(nameof(SequenceContainer.Triggers));
+            jObject.Remove(nameof(SequenceContainer.IsExpanded));
+            jObject.Remove(nameof(LinkedTemplateContainer.LinkState));
         }
     }
 }

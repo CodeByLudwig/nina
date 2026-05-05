@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -156,16 +156,20 @@ namespace NINA.Image.ImageAnalysis {
         }
 
         public static BitmapSource ConvertBitmap(System.Drawing.Bitmap bitmap, System.Windows.Media.PixelFormat pf) {
-            var bitmapData = bitmap.LockBits(
-                new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
-                System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
+            BitmapData bitmapData = null;
+            try {
+                bitmapData = bitmap.LockBits(
+                    new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                    System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
 
-            var bitmapSource = BitmapSource.Create(
-                bitmapData.Width, bitmapData.Height, 96, 96, pf, null,
-                bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
-
-            bitmap.UnlockBits(bitmapData);
-            return bitmapSource;
+                return BitmapSource.Create(
+                    bitmapData.Width, bitmapData.Height, 96, 96, pf, null,
+                    bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
+            } finally {
+                if (bitmapData != null) {
+                    bitmap.UnlockBits(bitmapData);
+                }
+            }
         }
 
         public static Bitmap BitmapFromSource(BitmapSource source) {
@@ -177,16 +181,22 @@ namespace NINA.Image.ImageAnalysis {
                     source.PixelWidth,
                     source.PixelHeight,
                     pf);
-            BitmapData data = bmp.LockBits(
-                    new Rectangle(System.Drawing.Point.Empty, bmp.Size),
-                    ImageLockMode.WriteOnly,
-                    pf);
-            source.CopyPixels(
-                    Int32Rect.Empty,
-                    data.Scan0,
-                    data.Height * data.Stride,
-                    data.Stride);
-            bmp.UnlockBits(data);
+            BitmapData data = null;
+            try {
+                data = bmp.LockBits(
+                        new Rectangle(System.Drawing.Point.Empty, bmp.Size),
+                        ImageLockMode.WriteOnly,
+                        pf);
+                source.CopyPixels(
+                        Int32Rect.Empty,
+                        data.Scan0,
+                        data.Height * data.Stride,
+                        data.Stride);
+            } finally {
+                if (data != null) {
+                    bmp.UnlockBits(data);
+                }
+            }
             return bmp;
         }
 
@@ -275,8 +285,10 @@ namespace NINA.Image.ImageAnalysis {
                 }
 
                 DebayeredImageData debayered = new DebayeredImageData();
-                debayered.ImageSource = ConvertBitmap(filter.Apply(bmp), PixelFormats.Rgb48);
-                debayered.ImageSource.Freeze();
+                using (var debayeredBitmap = filter.Apply(bmp)) {
+                    debayered.ImageSource = ConvertBitmap(debayeredBitmap, PixelFormats.Rgb48);
+                    debayered.ImageSource.Freeze();
+                }
                 debayered.Data = filter.LRGBArrays;
                 return debayered;
             }
@@ -356,6 +368,34 @@ namespace NINA.Image.ImageAnalysis {
                 var source = ImageUtility.ConvertBitmap(img, pf);
                 source.Freeze();
                 return source;
+            }
+        }
+
+        public static void BitShiftLeftInPlace(ushort[] data, int shift) {
+            if (data is null)
+                throw new ArgumentNullException(nameof(data));
+
+            if (shift <= 0)
+                return;
+
+            // For SIMD we multiply by 2^shift, since Vector<T> has no shift ops
+            ushort factor = (ushort)(1 << shift);
+            var factorVec = new System.Numerics.Vector<ushort>(factor);
+
+            int vectorSize = System.Numerics.Vector<ushort>.Count;
+            int i = 0;
+            int length = data.Length;
+
+            // SIMD loop
+            for (; i <= length - vectorSize; i += vectorSize) {
+                var v = new System.Numerics.Vector<ushort>(data, i);
+                v = System.Numerics.Vector.Multiply(v, factorVec);
+                v.CopyTo(data, i);
+            }
+
+            // Tail
+            for (; i < length; i++) {
+                data[i] = (ushort)(data[i] << shift);
             }
         }
     }

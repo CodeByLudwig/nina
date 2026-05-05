@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -47,6 +47,8 @@ namespace NINA.PlateSolving.Solvers {
             PlateSolveParameter parameter,
             PlateSolveImageProperties imageProperties);
 
+        protected virtual TimeSpan SolverTimeout => TimeSpan.FromMinutes(10);
+
         protected override async Task<PlateSolveResult> SolveAsyncImpl(
             IImageData source,
             PlateSolveParameter parameter,
@@ -67,15 +69,15 @@ namespace NINA.PlateSolving.Solvers {
                 outputPath = GetOutputPath(imagePath);
 
                 using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancelToken)) {
-                    cts.CancelAfter(TimeSpan.FromMinutes(10));
-                    await StartCLI(imagePath, outputPath, parameter, imageProperties, progress, cancelToken);
+                    cts.CancelAfter(SolverTimeout);
+                    await StartCLI(imagePath, outputPath, parameter, imageProperties, progress, cts.Token);
                 }
 
                 //Extract solution coordinates
                 result = ReadResult(outputPath, parameter, imageProperties);
             } catch(OperationCanceledException) {
                 if (!cancelToken.IsCancellationRequested) {
-                    Logger.Error("Platesolver timed out after 10 minutes");
+                    Logger.Error($"Platesolver timed out after {SolverTimeout.TotalMinutes:0.##} minutes");
                 }
             } finally {
                 progress?.Report(new ApplicationStatus() { Status = string.Empty });
@@ -148,7 +150,7 @@ namespace NINA.PlateSolving.Solvers {
                 throw new FileNotFoundException("Platesolver executable not found. Please point to the correct platesolver executable in platsolving options.", executableLocation);
             }
 
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            using System.Diagnostics.Process process = new System.Diagnostics.Process();
             System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
 
             startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
@@ -171,7 +173,19 @@ namespace NINA.PlateSolving.Solvers {
             };
             Logger.Debug($"Starting process '{executableLocation}' with args '{startInfo.Arguments}'");
             process.Start();
-            await process.WaitForExitAsync(ct);
+            try {
+                await process.WaitForExitAsync(ct);
+            } catch (OperationCanceledException) {
+                if (!process.HasExited) {
+                    try {
+                        process.Kill(entireProcessTree: true);
+                        await process.WaitForExitAsync(CancellationToken.None);
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                    }
+                }
+                throw;
+            }
         }
     }
 }

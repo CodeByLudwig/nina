@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -106,10 +107,15 @@ namespace NINA.Core.Utility {
         /// <param name="unixTimeStamp">Milliseconds after 1970</param>
         /// <returns>DateTime</returns>
         public static DateTime UnixTimeStampToDateTime(long unixTimeStamp) {
-        // Unix timestamp is seconds past epoch
-        System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
-        dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-        return dtDateTime;
+            // Unix timestamp is seconds past epoch
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dtDateTime;
+        }
+
+        public static double ToUnixSeconds(DateTime dt) {
+            var dto = new DateTimeOffset(dt.ToUniversalTime());
+            return dto.ToUnixTimeSeconds();
         }
 
         /// <summary>
@@ -119,6 +125,15 @@ namespace NINA.Core.Utility {
         /// <returns>long</returns>
         public static long DateTimeToUnixTimeStamp(DateTime date) {
             return (int)date.ToUniversalTime().Subtract(new DateTime(1970, 1, 1)).TotalSeconds; ;
+        }
+
+        public static DateTime UnixTimeStampToDateTime(double timestamp) {
+            DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            return origin.AddSeconds(timestamp);
+        }
+        public static long UnixTimeStampNow() {
+            var timeSpan = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+            return (long)timeSpan.TotalSeconds;
         }
 
         public static async Task<TimeSpan> Delay(int milliseconds, CancellationToken token) {
@@ -215,7 +230,7 @@ namespace NINA.Core.Utility {
             long max = (long)Math.Pow(scale, orders.Length - 1);
             foreach (string order in orders) {
                 if (bytes > max) {
-                    return string.Format("{0:D2.##} {1}", decimal.Divide(bytes, max), order);
+                    return string.Format(CultureInfo.InvariantCulture, "{0:0.##} {1}", decimal.Divide(bytes, max), order);
                 }
 
                 max /= scale;

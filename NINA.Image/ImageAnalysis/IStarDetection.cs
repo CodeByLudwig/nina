@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -46,6 +46,8 @@ namespace NINA.Image.ImageAnalysis {
 
     public class DetectedStar {
         public double HFR { get; set; }
+        public double FWHM { get; set; }
+        public double Eccentricity { get; set; }
         public Accord.Point Position { get; set; }
         public double AverageBrightness { get; set; }
         public double MaxBrightness { get; set; }
@@ -54,9 +56,11 @@ namespace NINA.Image.ImageAnalysis {
     }
 
     public class StarDetectionResult {
-        public double AverageHFR { get; set; }
+        public double AverageHFR { get; set; } = double.NaN;
+        public double AverageFWHM { get; set; } = double.NaN;
+        public double AverageEccentricity { get; set; } = double.NaN;
         public int DetectedStars { get; set; }
-        public double HFRStdDev { get; set; }
+        public double HFRStdDev { get; set; } = double.NaN;
         public List<DetectedStar> StarList { get; set; }
         public List<Accord.Point> BrightestStarPositions { get; set; }
         public StarDetectionParams Params { get; set; }

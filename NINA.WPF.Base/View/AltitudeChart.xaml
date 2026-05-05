@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright (c) 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -148,13 +148,31 @@
                     X="{Binding MaxAltitude.X}"
                     Y="{Binding MaxAltitude.Y}" />
                 <oxy:PointAnnotation
-                    Margin="0,10,0,0"
-                    Fill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    Fill="Transparent"
                     Shape="Circle"
-                    Text="{Binding DoesTransitSouth, Mode=OneWay, Converter={StaticResource BoolToLabelConverter}, ConverterParameter=LblTransitSouth|LblTransitNorth, StringFormat={}&#x0a;{0}}"
+                    Size="0"
                     TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                    X="{Binding MaxAltitude.X}"
-                    Y="{Binding MaxAltitude.Y}" />
+                    TextVerticalAlignment="Bottom"
+                    Y="{Binding MaxAltitude.Y, Converter={StaticResource ClampDoubleConverter}, ConverterParameter='10|90'}">
+                    <oxy:PointAnnotation.TextHorizontalAlignment>
+                        <MultiBinding Converter="{StaticResource MeridianTextAlignmentConverter}">
+                            <Binding Source="{StaticResource proxy}" Path="Data.Ticker.OxyNow" />
+                            <Binding Path="MaxAltitude.X" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.TextHorizontalAlignment>
+                    <oxy:PointAnnotation.X>
+                        <MultiBinding Converter="{StaticResource MeridianXPositionConverter}">
+                            <Binding Source="{StaticResource proxy}" Path="Data.Ticker.OxyNow" />
+                            <Binding Path="MaxAltitude.X" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.X>
+                    <oxy:PointAnnotation.Text>
+                        <MultiBinding StringFormat="{}&#x0a;{0} {1:HH:mm}">
+                            <Binding Path="DoesTransitSouth" Mode="OneWay" Converter="{StaticResource BoolToLabelConverter}" ConverterParameter="LblSouth|LblNorth" />
+                            <Binding Path="MaxAltitude.X" Converter="{StaticResource OxyPlotDateTimeConverter}" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Text>
+                </oxy:PointAnnotation>
             </oxy:Plot.Annotations>
         </oxy:Plot>
 
@@ -236,7 +254,5 @@
                 ToolTip="{ns:Loc LblMoonSeparation}"
                 Visibility="{Binding Moon.DisplayMoon, Converter={StaticResource BooleanToVisibilityHiddenConverter}}" />
         </Grid>
-
-
     </Grid>
 </UserControl>

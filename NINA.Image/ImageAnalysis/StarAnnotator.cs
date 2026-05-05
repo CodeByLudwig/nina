@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -52,7 +52,7 @@ namespace NINA.Image.ImageAnalysis {
 
                     using (var bmp = ImageUtility.Convert16BppTo8Bpp(imageToAnnotate)) {
                         using (var newBitmap = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb)) {
-                            Graphics graphics = Graphics.FromImage(newBitmap);
+                            using (Graphics graphics = Graphics.FromImage(newBitmap)) {
                             graphics.DrawImage(bmp, 0, 0);
                             // Set smoothing mode for sub pixel rendering
                             graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
@@ -94,10 +94,11 @@ namespace NINA.Image.ImageAnalysis {
                                 }
                             }
 
-                            var img = ImageUtility.ConvertBitmap(newBitmap, System.Windows.Media.PixelFormats.Bgr24);
+                                var img = ImageUtility.ConvertBitmap(newBitmap, System.Windows.Media.PixelFormats.Bgr24);
 
-                            img.Freeze();
-                            return img;
+                                img.Freeze();
+                                return img;
+                            }
                         }
                     }
                 }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1288,7 +1288,7 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
     <value>Activar escalat de bit</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Guarda imatges de 10/12/14 bits amb escala a 16 bits. (Només rellevant per a les càmeres Altair, Omegon, SVBony, RisingCam i ToupTek quan s'utilitza el controlador natiu)</value>
+    <value>Desa imatges de 8/10/12/14 bits amb escalat a 16 bits. (Només rellevant per a càmeres Altair, Moravian, Omegon, RisingCam, SVBony i ToupTek, quan s'utilitza el controlador natiu)</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Activat</value>
@@ -1589,6 +1589,18 @@ Quan es desactivi aquest, l'aplicació només saltarà a l'inici de l'exposició
   </data>
   <data name="LblFocuserAutoFocusStepSizeTooltip" xml:space="preserve">
     <value>La mida de pas d'enfocament utilitzat per a l'enfocament automàtic. Un pas ha de ser inferior a la tolerància del punt d’enfocament crític</value>
+  </data>
+  <data name="LblManualStepSmallMultiplier" xml:space="preserve">
+    <value>Multiplicar de passos petits</value>
+  </data>
+  <data name="LblManualStepSmallMultiplierTooltip" xml:space="preserve">
+    <value>Multiplicador d'enfocament manual per a passos petits (per defecte: 0,5)</value>
+  </data>
+  <data name="LblManualStepLargeMultiplier" xml:space="preserve">
+    <value>Multiplicador de passos grans</value>
+  </data>
+  <data name="LblManualStepLargeMultiplierTooltip" xml:space="preserve">
+    <value>Multiplicador d'enfocament manual per a un pas gran (per defecte: 5,0)</value>
   </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
     <value>Backlash DINS/FORA</value>
@@ -2470,6 +2482,9 @@ HFR calculat: {2}    </value>
   <data name="LblPlateSolveFailedDelayTooltip" xml:space="preserve">
     <value>Interval, en minuts, entre dos intents de resolució de plaques (platesolve)</value>
   </data>
+  <data name="LblCenteringFailedAfterMaxAttempts" xml:space="preserve">
+    <value>Centering failed after {0} correction attempts</value>
+  </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
     <value>Resolució de plaques (platesolve) de la imatge actual</value>
   </data>
@@ -2924,6 +2939,9 @@ Aquesta plantilla s'utilitzarà al començament per inicialitzar la seqüència 
   <data name="LblSlew" xml:space="preserve">
     <value>Gira</value>
   </data>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
+  </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Gira i centra</value>
   </data>
@@ -3318,6 +3336,12 @@ Arrossegueu el rectangle sobre la part del marc que vulgueu fer SubMostra i acti
   </data>
   <data name="LblTransitSouth" xml:space="preserve">
     <value>Trànsit Sud</value>
+  </data>
+  <data name="LblNorth" xml:space="preserve">
+    <value>Nord</value>
+  </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>Sud</value>
   </data>
   <data name="LblTransitTime" xml:space="preserve">
     <value>Temps de transició</value>
@@ -4277,6 +4301,15 @@ En cas que calgui una durada més llarga, es pot especificar una durada i l’ap
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_Name" xml:space="preserve">
     <value>Conjunt d'instruccions d'objectes de cel profund</value>
   </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_Description" xml:space="preserve">
+    <value>Checks this sequencer expression when the instruction set is reached. If true, the instructions inside run once. If false, they are skipped.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_ExpressionRequired" xml:space="preserve">
+    <value>Conditional Instruction Set requires an expression.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_ConditionalContainer_Name" xml:space="preserve">
+    <value>Conditional Instruction Set</value>
+  </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Totes les instruccions d’aquest conjunt d’instruccions s’executen en paral·lel. Aquest conjunt d’instruccions no avaluarà cap condició ni activador fins que no s’acabin totes les instruccions.</value>
   </data>
@@ -4458,13 +4491,13 @@ En cas que calgui una durada més llarga, es pot especificar una durada i l’ap
     <value>EA després increment de HFR</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
-<value>Tendència HFR per filtre</value>
-</data>
+    <value>Tendència HFR per filtre</value>
+  </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
-<value>Quan està desactivada, la tendència HFR s'avalua en tots els filtres combinats.
+    <value>Quan està desactivada, la tendència HFR s'avalua en tots els filtres combinats.
 Això pot ajudar a activar l'enfocament automàtic abans, sobretot quan es fan imatges amb canvis de filtre freqüents i una òptica sensible a la temperatura, en una temperatura ambient que canvia ràpidament.
 Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vostra configuració siguin petites.</value>
-</data>
+  </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>Un activador per iniciar l'enfocament automàtic després que la temperatura hagi augmentat la quantitat donada en graus des de la darrera execució d’enfocament automàtic o inici de la seqüència</value>
   </data>
@@ -4482,6 +4515,36 @@ Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vos
   </data>
   <data name="Lbl_SequenceTrigger_MeridianFlipTrigger_Name" xml:space="preserve">
     <value>Canvi de Meridià</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Name" xml:space="preserve">
+    <value>Programmable Meridian Flip</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_Description" xml:space="preserve">
+    <value>A meridian flip trigger with customizable actions before and after the flip.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Description" xml:space="preserve">
+    <value>Before Flip Actions</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_Description" xml:space="preserve">
+    <value>After Flip Actions</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_HelpDescription" xml:space="preserve">
+    <value>Instructions that run before waiting for the meridian flip.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_AfterFlipActions_HelpDescription" xml:space="preserve">
+    <value>Instructions that run after the meridian flip.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_BeforeFlipActions_Warning" xml:space="preserve">
+    <value>Keep these steps short. Long before-flip actions can delay the meridian flip.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_WaitForFlipWindow_Description" xml:space="preserve">
+    <value>Wait For Flip Window</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_ResumeTrackingAndFlip_Description" xml:space="preserve">
+    <value>Resume Tracking and Flip</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_ProgrammableMeridianFlipTrigger_InitialSettleAndSyncDome_Description" xml:space="preserve">
+    <value>Settle</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CameraCannotSetTemperature" xml:space="preserve">
     <value>La càmera no té un refrigerador i no pot configurar la temperatura</value>
@@ -4564,11 +4627,20 @@ Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vos
   <data name="LblTemplates" xml:space="preserve">
     <value>Plantilles</value>
   </data>
+  <data name="LblLinkedTemplates" xml:space="preserve">
+    <value>Linked Templates</value>
+  </data>
   <data name="LblTemplate_DefaultTemplates" xml:space="preserve">
     <value>Plantilles per defecte</value>
   </data>
   <data name="LblTemplate_DropTemplateHere" xml:space="preserve">
     <value>Arrossega aquí el conjunt d'instruccions de seqüència des de la seqüència per crear una nova plantilla</value>
+  </data>
+  <data name="LblTemplate_LinkedTemplateHint" xml:space="preserve">
+    <value>Hold Ctrl while dropping a template to add it as linked instead of copied.</value>
+  </data>
+  <data name="LblTemplate_LinkedTemplateHintTooltip" xml:space="preserve">
+    <value>A linked template keeps a live connection to the source template. Its contents are shown in the sequence as a read-only preview and refresh automatically when the template changes. Use Edit Template on the linked template to update the source template. Use a normal drop when you want an independent copy.</value>
   </data>
   <data name="LblTemplate_OverwriteTemplateMessageBox_Caption" xml:space="preserve">
     <value>Sobreescriure la plantilla?</value>
@@ -4926,6 +4998,60 @@ S’utilitza millor juntament amb una altra condició de bucle per no acabar en 
   </data>
   <data name="Lbl_SequenceContainer_SaveAsTemplate_Tooltip" xml:space="preserve">
     <value>Deseu el conjunt d’instruccions actual i tot el seu contingut com a plantilla per tornar-la a utilitzar</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Name" xml:space="preserve">
+    <value>Linked Template</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DisplayName" xml:space="preserve">
+    <value>Linked Template: {0}</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_Description" xml:space="preserve">
+    <value>Adds a live connection to a sequence template instead of copying it. The current template content is shown inside this container so it can be inspected in the sequence, but it is read-only until Edit Template is enabled. When the source template changes, this container updates automatically to the latest version. During execution N.I.N.A. waits until templates have finished loading, then executes the current template content. If the linked template is based on a target container, the template still stores only the reusable sequence structure; drop a target onto the linked template to choose the target for this use, and N.I.N.A. will reapply that target whenever the template refreshes. Use this when several sequences should follow the same template; use a normal template drop when you want an independent copy. Add one from the Linked Templates menu, or hold Ctrl while dropping a template into the sequence to drop it as linked.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderReadonly" xml:space="preserve">
+    <value>Linked template preview</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_HeaderEditing" xml:space="preserve">
+    <value>Editing linked template</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusReadonly" xml:space="preserve">
+    <value>Read-only preview of "{0}". Use Edit Template to change the source template.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusEditing" xml:space="preserve">
+    <value>Editing the source template. Saving updates the template for every linked use.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusLoading" xml:space="preserve">
+    <value>Waiting for template "{0}" to finish loading.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusMissing" xml:space="preserve">
+    <value>Template "{0}" could not be found.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_StatusInvalid" xml:space="preserve">
+    <value>This linked template does not have a valid source template.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_DefaultNotEditable" xml:space="preserve">
+    <value>Default templates cannot be edited directly. Save the template as a user template first.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_EditTemplate" xml:space="preserve">
+    <value>Edit Template</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_SaveTemplate" xml:space="preserve">
+    <value>Save Template</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_CancelEditTemplate" xml:space="preserve">
+    <value>Cancel Template Editing</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetSelected" xml:space="preserve">
+    <value>Target: {0}</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetMissing" xml:space="preserve">
+    <value>No target selected. Drop a target here or enter target details below.</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetDrop" xml:space="preserve">
+    <value>Use this target with the linked template</value>
+  </data>
+  <data name="Lbl_SequenceContainer_LinkedTemplateContainer_TargetRequired" xml:space="preserve">
+    <value>Select a target for this linked template before running the sequence.</value>
   </data>
   <data name="LblSafetyMonitorNotConnected" xml:space="preserve">
     <value>El monitor de seguretat no està connectat</value>
@@ -6498,6 +6624,9 @@ Això s'avalua DESPRÉS del paràmetre "Aparcar la muntura abans de moure la per
   <data name="LblDewHeaterStrength" xml:space="preserve">
     <value>Objectiu de Potència de l'escalfador de rosada</value>
   </data>
+  <data name="LblColoredContainerBorders" xml:space="preserve">
+    <value>Vores de contenidors de colors</value>
+  </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
     <value>Acceleració del Hardware</value>
   </data>
@@ -6815,6 +6944,9 @@ Augmenta el temps d'exposició mínim o espera fins que sigui més brillant.</va
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Mostra l'Histrograma</value>
   </data>
+  <data name="LblShowStarMeasurementsInArcseconds" xml:space="preserve">
+    <value>Show star measurements in arcseconds</value>
+  </data>
   <data name="LblInfoOnly" xml:space="preserve">
     <value>Només info</value>
   </data>
@@ -6957,6 +7089,9 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Alternar visualització del catàleg</value>
+  </data>
+  <data name="LblToggleShowAllCatalogues" xml:space="preserve">
+    <value>Mostra tots els catàlegs</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>Alt de l'Objectiu</value>
@@ -7398,6 +7533,63 @@ Si el recompte d'exposicions no és important per a vosaltres, activeu aquesta o
   <data name="LblOasisFocuserNotAvailableError" xml:space="preserve">
     <value>L'enfocador Oasis seleccionat no està disponible. Si us plau, comproveu la connexió i torneu a escanejar els dispositius.</value>
   </data>
+  <data name="LblOasisFilterWheelNotAvailableError" xml:space="preserve">
+    <value>La roda de filtres Oasis seleccionada no està disponible. Si us plau, comproveu la connexió i torneu a escanejar els dispositius.</value>
+  </data>
+  <data name="LblOasisTurboMode" xml:space="preserve">
+    <value>Mode Turbo</value>
+  </data>
+  <data name="LblOasisDeviceId" xml:space="preserve">
+    <value>ID del dispositiu</value>
+  </data>
+  <data name="LblOasisDeviceIdTooltip" xml:space="preserve">
+    <value>ID del dispositiu</value>
+  </data>
+  <data name="LblOasisState" xml:space="preserve">
+    <value>Estat</value>
+  </data>
+  <data name="LblOasisSyncFocusOffsets" xml:space="preserve">
+    <value>Sincronitza els desplaçaments de l'enfocament</value>
+  </data>
+  <data name="LblOasisStoreFocusOffsets" xml:space="preserve">
+    <value>Emmagatzema els desplaçaments de l'enfocament</value>
+  </data>
+  <data name="LblOasisSyncFilterNames" xml:space="preserve">
+    <value>Sincronitza els noms dels filtres</value>
+  </data>
+  <data name="LblOasisStoreFilterNames" xml:space="preserve">
+    <value>Emmagatzema els noms dels filtres</value>
+  </data>
+  <data name="LblOasisAutorun" xml:space="preserve">
+    <value>Execució automàtica</value>
+  </data>
+  <data name="LblOasisSpeedTooltip" xml:space="preserve">
+    <value>Seleccioneu Velocitat normal o lenta quan la temperatura ambient sigui molt baixa per garantir que els filtres es puguin canviar sense problemes.</value>
+  </data>
+  <data name="LblOasisTurboModeTooltip" xml:space="preserve">
+    <value>Activeu el mode turbo per augmentar el parell motor. Això pot ser útil quan la temperatura ambient és molt baixa. Assegureu-vos que el port USB host tingui una capacitat d'alimentació de 5 V i 1 A com a mínim.</value>
+  </data>
+  <data name="LblOasisAutorunTooltip" xml:space="preserve">
+    <value>Activeu aquesta opció quan voleu que els filtres canviïn automàticament a l'última posició durant l'engegada.</value>
+  </data>
+  <data name="LblOasisSyncFocusOffsetsTooltip" xml:space="preserve">
+    <value>Llegeix els desplaçaments d'enfocament emmagatzemats al dispositiu Oasis i actualitza els desplaçaments d'enfocament NINA.</value>
+  </data>
+  <data name="LblOasisStoreFocusOffsetsTooltip" xml:space="preserve">
+    <value>Carrega i emmagatzema els desplaçaments d'enfocament NINA a la roda de filtres Oasis.</value>
+  </data>
+  <data name="LblOasisSyncNamesTooltip" xml:space="preserve">
+    <value>Llegeix els noms dels filtres emmagatzemats al dispositiu Oasis i actualitza les etiquetes dels filtres NINA.</value>
+  </data>
+  <data name="LblOasisStoreNamesTooltip" xml:space="preserve">
+    <value>Puja i emmagatzema els noms dels filtres NINA a la roda de filtres Oasis.</value>
+  </data>
+  <data name="LblOasisCounter" xml:space="preserve">
+    <value>Comptador</value>
+  </data>
+  <data name="LblOasisCounterTooltip" xml:space="preserve">
+    <value>Indicador que mostra quantes ranures de filtre s'han girat des que es va engegar la roda de filtres.</value>
+  </data>
   <data name="LblBluetooth" xml:space="preserve">
     <value>Bluetooth</value>
   </data>
@@ -7417,6 +7609,337 @@ Si el recompte d'exposicions no és important per a vosaltres, activeu aquesta o
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
     <value>Número de dispositiu</value>
+  </data>
+  <data name="LblSymbols" xml:space="preserve">
+    <value>Símbols</value>
+  </data>
+  <data name="Lbl_SymbolBroker_NoCategoryData" xml:space="preserve">
+    <value>No hi ha altres dades per a {0}</value>
+    <comment>{0} will be filled with the category name</comment>
+  </data>
+  <data name="Lbl_SymbolBroker_AdditionalData" xml:space="preserve">
+    <value>Símbols addicionals:</value>
+    <comment>The prefix for additional data rows for symbol tooltips</comment>
+  </data>
+  <data name="Lbl_SymbolBroker_SymbolOptions" xml:space="preserve">
+    <value>Opcions:</value>
+    <comment>The prefix per symbol for additional options</comment>
+  </data>
+  <data name="Lbl_SymbolBroker_ClickOnSymbolToCopyToClipboard" xml:space="preserve">
+    <value>Feu clic a qualsevol símbol per copiar-lo al porta-retalls.</value>
+  </data>
+  <data name="LblTrue" xml:space="preserve">
+    <value>És cert</value>
+  </data>
+  <data name="LblFalse" xml:space="preserve">
+    <value>És Fals</value>
+  </data>
+  <data name="LblDecimal" xml:space="preserve">
+    <value>(Decimal:</value>
+    <comment>Note space after the colon; this is for showing the decimal representation of HMS/DMS coords</comment>
+  </data>
+  <data name="LblWarnings" xml:space="preserve">
+    <value>Avís(os): {0}</value>
+  </data>
+  <data name="LblNoErrors" xml:space="preserve">
+    <value>Sense errors</value>
+  </data>
+  <data name="LblErrors" xml:space="preserve">
+    <value>Error(s): {0}</value>
+  </data>
+  <data name="LblNotEvaluated" xml:space="preserve">
+    <value>No avaluat</value>
+    <comment>As in, a variable is not yet evaluated</comment>
+  </data>
+  <data name="LblTomorrow" xml:space="preserve">
+    <value>demà</value>
+  </data>
+  <data name="LblYesterday" xml:space="preserve">
+    <value>ahir</value>
+  </data>
+  <data name="LblUndefined" xml:space="preserve">
+    <value>Indefinit</value>
+    <comment>As in "Undefined: &lt;variable name&gt;"</comment>
+  </data>
+  <data name="LblSyntaxError" xml:space="preserve">
+    <value>Error de sintaxi</value>
+    <comment>Used when an Expression can't be parsed</comment>
+  </data>
+  <data name="LblMustBeInteger" xml:space="preserve">
+    <value>El valor ha de ser un nombre enter</value>
+  </data>
+  <data name="LblAnd" xml:space="preserve">
+    <value>i</value>
+  </data>
+  <data name="LblAlreadyDefined" xml:space="preserve">
+    <value>ja està definit</value>
+    <comment>As in &lt;variable&gt; is already defined</comment>
+  </data>
+  <data name="LblConstantVariable" xml:space="preserve">
+    <value>La constant/variable</value>
+    <comment>As in "The Constant/Variable &lt;name&gt; is not defined"</comment>
+  </data>
+  <data name="LblNoSymbols" xml:space="preserve">
+    <value>No s'utilitza cap constant/variable definida en aquesta expressió</value>
+  </data>
+  <data name="LblNotYetDefined" xml:space="preserve">
+    <value> La constant/variable encara no està definida</value>
+  </data>
+  <data name="LblValueBetween" xml:space="preserve">
+    <value>El valor ha d'estar entre {0} i {1}</value>
+  </data>
+  <data name="LblVariable" xml:space="preserve">
+    <value>Variable:</value>
+  </data>
+  <data name="LblInitially" xml:space="preserve">
+    <value>Inicial</value>
+  </data>
+  <data name="LblNewValue" xml:space="preserve">
+    <value>Nou Valor</value>
+  </data>
+  <data name="LblIsAmbiguous" xml:space="preserve">
+    <value>és ambigu, feu servir un dels</value>
+    <comment>As in &lt;variable name&gt; is ambiguous, use one of &lt;option 1&gt;; &lt;option 2&gt; ...</comment>
+  </data>
+  <data name="Lbl_SequenceCategory_Symbol" xml:space="preserve">
+    <value>Símbols</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
+    <value>Crea una variable el valor de la qual es pot utilitzar en expressions</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
+    <value>Define Variable</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
+    <value>Creates a Constant whose value can be used in Expressions</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
+    <value>Define Constant</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariable_Name" xml:space="preserve">
+    <value>Set Variable</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariable_Description" xml:space="preserve">
+    <value>If the Variable has been previously defined, its value will become the result of the Expression</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Name" xml:space="preserve">
+    <value>Set Variable to Date/Time</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description" xml:space="preserve">
+    <value>If the Variable has been previously defined, its value will become the specified Date/Time</value>
+  </data>
+  <data name="Lbl_SequenceCondition_LoopWhile_Name" xml:space="preserve">
+    <value>Loop While</value>
+  </data>
+  <data name="Lbl_SequenceCondition_LoopWhile_Description" xml:space="preserve">
+    <value>Loops while the Expression is not false</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_WaitUntil_Name" xml:space="preserve">
+    <value>Wait Until</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_WaitUntil_Description" xml:space="preserve">
+    <value>Waits until the Expression is true</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Utility_Random_Description" xml:space="preserve">
+    <value>Random double value between 0.0 and 1.0.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Now_Description" xml:space="preserve">
+    <value>Current Unix timestamp in seconds.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Hour_Description" xml:space="preserve">
+    <value>Hour component (0-23) of a datetime or the current time.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Minute_Description" xml:space="preserve">
+    <value>Minute component (0-59) of a datetime or the current time.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Day_Description" xml:space="preserve">
+    <value>Day of the month (1-31) of a datetime or the current date.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Month_Description" xml:space="preserve">
+    <value>Month (1-12) of a datetime or the current date.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Year_Description" xml:space="preserve">
+    <value>Year component of a datetime or the current date.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_Dow_Description" xml:space="preserve">
+    <value>Day of the week as an integer (0 = Sunday … 6 = Saturday).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_AddMinutes_Description" xml:space="preserve">
+    <value>Datetime plus the specified minutes (Unix timestamp).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_AddHours_Description" xml:space="preserve">
+    <value>Datetime plus the specified hours (Unix timestamp).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_SecondsSince_Description" xml:space="preserve">
+    <value>Seconds elapsed since the given datetime (Unix timestamp).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Time_DateString_Description" xml:space="preserve">
+    <value>Datetime formatted using the specified .NET format string.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StartsWith_Description" xml:space="preserve">
+    <value>Whether the string starts with the specified prefix.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StrLength_Description" xml:space="preserve">
+    <value>Length of the given string, or -1 if the value is not a string.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StrConcat_Description" xml:space="preserve">
+    <value>Concatenation of two strings.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_StrAtPos_Description" xml:space="preserve">
+    <value>Character at the specified zero-based index, or empty if out of bounds.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_Contains_Description" xml:space="preserve">
+    <value>Whether the string contains the specified substring.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_EndsWith_Description" xml:space="preserve">
+    <value>Whether the string ends with the specified suffix.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_Substring_Description" xml:space="preserve">
+    <value>Substring of the given string; empty if out of range.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_ToLower_Description" xml:space="preserve">
+    <value>Lower-case version of the string (invariant).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_String_ToUpper_Description" xml:space="preserve">
+    <value>Upper-case version of the string (invariant).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Abs_Description" xml:space="preserve">
+    <value>Absolute value of a number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Acos_Description" xml:space="preserve">
+    <value>Angle whose cosine is the specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Asin_Description" xml:space="preserve">
+    <value>Angle whose sine is the specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Atan_Description" xml:space="preserve">
+    <value>Angle whose tangent is the specified number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Avg_Description" xml:space="preserve">
+    <value>Arithmetic mean of all arguments.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Ceiling_Description" xml:space="preserve">
+    <value>Smallest integer greater than or equal to the number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Cos_Description" xml:space="preserve">
+    <value>Cosine of the specified angle.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Exp_Description" xml:space="preserve">
+    <value>e raised to the specified power.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Floor_Description" xml:space="preserve">
+    <value>Largest integer less than or equal to the number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_IEEERemainder_Description" xml:space="preserve">
+    <value>IEEE remainder of x / y.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Ln_Description" xml:space="preserve">
+    <value>Natural logarithm of a number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Log_Description" xml:space="preserve">
+    <value>Logarithm of a number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Log10_Description" xml:space="preserve">
+    <value>Base-10 logarithm of a number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Max_Description" xml:space="preserve">
+    <value>Larger of two numbers.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Min_Description" xml:space="preserve">
+    <value>Smaller of two numbers.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Pow_Description" xml:space="preserve">
+    <value>Number raised to the specified power.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Round_Description" xml:space="preserve">
+    <value>Rounded value to the nearest integer or specified decimal places.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sign_Description" xml:space="preserve">
+    <value>Sign of a number.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sin_Description" xml:space="preserve">
+    <value>Sinus de l'angle especificat.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sqrt_Description" xml:space="preserve">
+    <value>Arrel quadrada d'un nombre.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Tan_Description" xml:space="preserve">
+    <value>Tangent de l'angle especificat.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Truncate_Description" xml:space="preserve">
+    <value>Part integral d'un nombre.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Mod_Description" xml:space="preserve">
+    <value>Mòdul matemàtic (x mod y). El resultat és en [0, y) per a y positiva.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Clamp_Description" xml:space="preserve">
+    <value>Valor limitat a l'interval inclusiu [mín., màx.].</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Between_Description" xml:space="preserve">
+    <value>Si x està entre el mínim i el màxim (ambdós inclosos).</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Deg_Description" xml:space="preserve">
+    <value>Conversió de radians a graus.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Rad_Description" xml:space="preserve">
+    <value>Conversió de graus a radians.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Math_Sum_Description" xml:space="preserve">
+    <value>Suma de tots els arguments.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_In_Description" xml:space="preserve">
+    <value>Quan un element pertany a un conjunt de valors.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_If_Description" xml:space="preserve">
+    <value>Valor condicional basat en una condició.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_Ifs_Description" xml:space="preserve">
+    <value>Valor condicional basat en diverses condicions, amb un valor per defecte.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_Defined_Description" xml:space="preserve">
+    <value>Si un nom de símbol està definit a la taula de símbols.</value>
+  </data>
+  <data name="Lbl_SymbolFunction_Logic_Not_Description" xml:space="preserve">
+    <value>Negació lògica d'un valor booleà.</value>
+  </data>
+  <data name="Lbl_SymbolBroker_ClickOnSymbolFunctionToCopyToClipboard" xml:space="preserve">
+    <value>Feu clic a qualsevol funció per copiar-la al porta-retalls.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions" xml:space="preserve">
+    <value>Funcions</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Usage" xml:space="preserve">
+    <value>Ús</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Validation_NoArguments" xml:space="preserve">
+    <value>La funció '{0}' no espera arguments, però ha obtingut {1}.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Validation_ExactlyOneArgument" xml:space="preserve">
+    <value>La funció '{0}' espera exactament un argument, però ha obtingut {1}.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Validation_ExactlyManyArguments" xml:space="preserve">
+    <value>La funció '{0}' espera exactament {1} arguments, però ha obtingut {2}.</value>
+  </data>
+  <data name="Lbl_SymbolFunctions_Validation_BetweenArguments" xml:space="preserve">
+    <value>La funció '{0}' espera entre {1} i {2} arguments, però ha obtingut {3}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeGreaterThanOrEquals" xml:space="preserve">
+    <value>El valor ha de ser superior o igual a {0}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeGreaterThan" xml:space="preserve">
+    <value>El valor ha de ser superior a {0}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeInclusiveInclusive" xml:space="preserve">
+    <value>El valor ha d'estar entre {0} i {1}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeInclusiveExclusive" xml:space="preserve">
+    <value>El valor ha d'estar entre {0} i inferior a {1}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeExclusiveInclusive" xml:space="preserve">
+    <value>El valor ha de ser superior a {0} i superior a {1}.</value>
+  </data>
+  <data name="Lbl_Expressions_CheckRange_RangeExclusiveExclusive" xml:space="preserve">
+    <value>El valor ha de ser superior a {0} i inferior a {1}.</value>
   </data>
   <data name="LblNotificationWorkArea" xml:space="preserve">
     <value>Zona de treball de notificació</value>
@@ -7444,5 +7967,78 @@ Si el recompte d'exposicions no és important per a vosaltres, activeu aquesta o
   </data>
   <data name="LblNotificationApplication" xml:space="preserve">
     <value>Aplicació</value>
+  </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZSstandar</value>
+  </data>
+  <data name="LblMoravianFlashVersion" xml:space="preserve">
+    <value>Versió flash</value>
+    <comment>Version of an internal camera component stored in flash memory.
+    This is a separate version from camera firmware and driver.</comment>
+  </data>
+  <data name="LblDimensions" xml:space="preserve">
+    <value>Dimensions</value>
+    <comment>Label for entering subframe dimensions</comment>
+  </data>
+  <data name="LblTop" xml:space="preserve">
+    <value>A dalt</value>
+  </data>
+  <data name="LblLeft" xml:space="preserve">
+    <value>Esquerra</value>
+  </data>
+  <data name="LblSequencerExpressionValues" xml:space="preserve">
+    <value>Valors d'expressions del seqüenciador</value>
+  </data>
+  <data name="LblEccentricity" xml:space="preserve">
+    <value>Excentricitat</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Name" xml:space="preserve">
+    <value>Custom Trigger</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Description" xml:space="preserve">
+    <value>Use an existing trigger as the trigger source, then choose your own instructions to run when that trigger would normally fire.
+This is useful when a built-in trigger has the timing you need, but you want custom actions.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_Name" xml:space="preserve">
+    <value>Trigger Source</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_Name" xml:space="preserve">
+    <value>Custom Trigger Instructions</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_HelpDescription" xml:space="preserve">
+    <value>Drop a trigger here to choose when the custom trigger runs.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_HelpDescription" xml:space="preserve">
+    <value>Drop instructions here to run when the selected trigger source fires.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_TriggerSource_DragOverText" xml:space="preserve">
+    <value>ADD TRIGGER SOURCE</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_Instructions_DragOverText" xml:space="preserve">
+    <value>ADD CUSTOM INSTRUCTIONS</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_NoTriggerSource_Issue" xml:space="preserve">
+    <value>Add a trigger source.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_CustomTrigger_NoInstructions_Issue" xml:space="preserve">
+    <value>Add at least one instruction.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Name" xml:space="preserve">
+    <value>Trigger On Unsafe</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_Description" xml:space="preserve">
+    <value>Runs configured instructions when the safety monitor reports unsafe conditions or disconnects after being connected, waits until conditions are safe again, then runs follow-up instructions.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_Description" xml:space="preserve">
+    <value>Before Waiting For Safety</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_Description" xml:space="preserve">
+    <value>After Waiting For Safety</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_BeforeWaitingUntilSafe_HelpDescription" xml:space="preserve">
+    <value>Instructions that run before waiting until conditions are safe again.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
+    <value>Instructions that run after conditions are safe again.</value>
   </data>
 </root>

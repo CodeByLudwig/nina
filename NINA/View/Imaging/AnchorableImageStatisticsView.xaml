@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright (c) 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -11,6 +11,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
@@ -26,6 +27,10 @@
             </Grid.RowDefinitions>
 
             <Grid Margin="5" Visibility="{Binding SettingsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
@@ -36,6 +41,17 @@
                     Margin="5,0,0,0"
                     HorizontalAlignment="Left"
                     IsChecked="{Binding ActiveProfile.DockPanelSettings.ShowImagingHistogram}" />
+                <TextBlock
+                    Grid.Row="1"
+                    Margin="0,5,0,0"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblShowStarMeasurementsInArcseconds}" />
+                <CheckBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="5,5,0,0"
+                    HorizontalAlignment="Left"
+                    IsChecked="{Binding ActiveProfile.DockPanelSettings.StarMeasurementsInArcseconds}" />
             </Grid>
 
             <StackPanel Grid.Row="1">
@@ -46,7 +62,7 @@
                     <UniformGrid Columns="2">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="55"
+                                Width="65"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblWidth}" />
                             <TextBlock
@@ -57,7 +73,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="55"
+                                Width="65"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblHeight}" />
                             <TextBlock
@@ -70,7 +86,7 @@
                     <UniformGrid Columns="2">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="55"
+                                Width="65"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblMean}" />
                             <TextBlock
@@ -81,7 +97,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="55"
+                                Width="65"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblStDev}" />
                             <TextBlock
@@ -95,7 +111,7 @@
                     <UniformGrid Columns="2">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="55"
+                                Width="65"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblMedian}" />
                             <TextBlock
@@ -106,7 +122,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="55"
+                                Width="65"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblMAD}" />
                             <TextBlock
@@ -119,7 +135,7 @@
                     <UniformGrid Columns="2">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="55"
+                                Width="65"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblMin}" />
                             <StackPanel Orientation="Horizontal">
@@ -137,7 +153,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="55"
+                                Width="65"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblMax}" />
                             <StackPanel Orientation="Horizontal">
@@ -157,7 +173,7 @@
                     <UniformGrid Columns="2">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="55"
+                                Width="65"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNrStars}" />
                             <TextBlock
@@ -168,20 +184,71 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="55"
+                                Width="65"
                                 VerticalAlignment="Center"
-                                Text="{ns:Loc LblHFR}" />
+                                Text="{ns:Loc LblFWHM}" />
                             <TextBlock
                                 Width="70"
                                 HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="{Binding StarDetectionAnalysis.HFR, StringFormat=\{0:0.00\}, Converter={StaticResource NaNToDoubleDashConverter}}" />
+                                VerticalAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource ImageStatisticsUnitConverter}" ConverterParameter="{x:Static enum:StarMeasurementUnit.Arcseconds}">
+                                        <Binding Path="StarDetectionAnalysis.FWHM" />
+                                        <Binding Path="ActiveProfile.DockPanelSettings.StarMeasurementsInArcseconds" Source="{StaticResource ProfileService}" />
+                                        <Binding Path="ActiveProfile.CameraSettings.PixelSize" Source="{StaticResource ProfileService}" />
+                                        <Binding Path="ActiveProfile.TelescopeSettings.FocalLength" Source="{StaticResource ProfileService}" />
+                                        <Binding Path="StarDetectionAnalysis.FWHMUnit" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </StackPanel>
                     </UniformGrid>
                     <UniformGrid Columns="2">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="55"
+                                Width="65"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblHFR}" />
+                            <TextBlock
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource ImageStatisticsUnitConverter}" ConverterParameter="{x:Static enum:StarMeasurementUnit.Pixels}">
+                                        <Binding Path="StarDetectionAnalysis.HFR" />
+                                        <Binding Path="ActiveProfile.DockPanelSettings.StarMeasurementsInArcseconds" Source="{StaticResource ProfileService}" />
+                                        <Binding Path="ActiveProfile.CameraSettings.PixelSize" Source="{StaticResource ProfileService}" />
+                                        <Binding Path="ActiveProfile.TelescopeSettings.FocalLength" Source="{StaticResource ProfileService}" />
+                                        <Binding Path="StarDetectionAnalysis.HFRUnit" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Width="65"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblHFRStDev}" />
+                            <TextBlock
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource ImageStatisticsUnitConverter}" ConverterParameter="{x:Static enum:StarMeasurementUnit.Pixels}">
+                                        <Binding Path="StarDetectionAnalysis.HFRStDev" />
+                                        <Binding Path="ActiveProfile.DockPanelSettings.StarMeasurementsInArcseconds" Source="{StaticResource ProfileService}" />
+                                        <Binding Path="ActiveProfile.CameraSettings.PixelSize" Source="{StaticResource ProfileService}" />
+                                        <Binding Path="ActiveProfile.TelescopeSettings.FocalLength" Source="{StaticResource ProfileService}" />
+                                        <Binding Path="StarDetectionAnalysis.HFRStDevUnit" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </StackPanel>
+                    </UniformGrid>
+                    <UniformGrid Columns="2">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Width="65"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblBitDepth}" />
                             <TextBlock
@@ -192,20 +259,20 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="55"
+                                Width="65"
                                 VerticalAlignment="Center"
-                                Text="{ns:Loc LblHFRStDev}" />
+                                Text="{ns:Loc LblEccentricity}" />
                             <TextBlock
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding StarDetectionAnalysis.HFRStDev, StringFormat=\{0:0.00\}, Converter={StaticResource NaNToDoubleDashConverter}}" />
+                                Text="{Binding StarDetectionAnalysis.Eccentricity, StringFormat=\{0:0.00\}, Converter={StaticResource NaNToDoubleDashConverter}}" />
                         </StackPanel>
                     </UniformGrid>
                     <UniformGrid Columns="2">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="55"
+                                Width="65"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblGain}" />
                             <TextBlock
@@ -216,7 +283,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="55"
+                                Width="65"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblOffset}" />
                             <TextBlock

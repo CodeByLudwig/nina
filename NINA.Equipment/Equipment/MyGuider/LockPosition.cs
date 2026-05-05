@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -42,7 +42,7 @@ namespace NINA.Equipment.Equipment.MyGuider {
             return obj is LockPosition pos && pos.X == X && pos.Y == Y;
         }
 
-        public override int GetHashCode() => (X, Y, EventTime).GetHashCode();
+        public override int GetHashCode() => (X, Y).GetHashCode();
 
         public override string ToString() {
             return $"x={X} y={Y}";

@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2026 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -20,6 +20,7 @@ using NINA.Equipment.Exceptions;
 using NINA.Equipment.Interfaces;
 using NINA.Profile.Interfaces;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -235,7 +236,7 @@ namespace NINA.Equipment.Equipment.MyGPS {
             public int Mode { get; set; }
 
             public override string ToString() {
-                return $"Class: {Class}, Mode: {Mode}, Latitude: {Latitude}, Longitude: {Longitude}, Altitude: {Altitude}";
+                return string.Format(CultureInfo.InvariantCulture, "Class: {0}, Mode: {1}, Latitude: {2}, Longitude: {3}, Altitude: {4}", Class, Mode, Latitude, Longitude, Altitude);
             }
         }
     }
